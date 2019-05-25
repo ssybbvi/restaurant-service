@@ -1,0 +1,54 @@
+{
+  "name": "koa2-API-scaffold",
+  "version": "1.0.0",
+  "description": "Koa2 RESTful API 服务器的脚手架",
+  "author": "yi-ge <a@wyr.me>",
+  "license": "WTFPL",
+  "scripts": {
+    "start": "gulp nodemon",
+    "dev": "gulp",
+    "build": "babel src -d dist",
+    "production": "node dist/app.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^8.5.1",
+    "koa": "^2.7.0",
+    "koa-body": "^4.1.0",
+    "koa-compose": "^4.1.0",
+    "koa-jwt": "^3.5.1",
+    "koa-router": "^7.4.0",
+    "koa-static2": "^0.1.8",
+    "nedb-promises": "^3.0.4",
+    "nodemailer": "^6.1.0",
+    "require-directory": "^2.1.1",
+    "sequelize": "^5.2.12"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/plugin-external-helpers": "^7.2.0",
+    "@babel/plugin-transform-runtime": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/register": "^7.4.0",
+    "@babel/runtime": "^7.4.3",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.16.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-friendly-formatter": "^4.0.1",
+    "eslint-plugin-html": "^5.0.3",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jest": "^22.4.1",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "gulp": "^4.0.0",
+    "gulp-eslint": "^5.0.0",
+    "gulp-nodemon": "^2.4.2",
+    "jest": "^24.7.1",
+    "koa-logger": "^3.2.0"
+  },
+  "engines": {
+    "node": ">= 7.8.0",
+    "npm": ">= 4.2.0"
+  }
+}
