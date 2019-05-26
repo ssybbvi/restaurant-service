@@ -1,6 +1,7 @@
 import * as tableDb from '../db/table'
 import * as orderDb from '../db/order'
 import * as productDb from '../db/product'
+import enumerate from '../db/enumerate'
 
 export let OpenTable = async (ctx) => {
   let {
@@ -12,7 +13,7 @@ export let OpenTable = async (ctx) => {
     _id: tableId
   })
 
-  if (table.status != tableDb.tableStatus.available) {
+  if (table.status != enumerate.tableStatus.available) {
     return ctx.body = {
       result: false,
       data: "桌子使用中"
@@ -22,19 +23,20 @@ export let OpenTable = async (ctx) => {
   let order = await orderDb.insert({
     startDateTime: new Date().getTime(),
     tableId: tableId,
+    tableName: table.name,
     productItems: [],
-    status: orderDb.orderStaus.processing,
+    status: enumerate.orderStatus.processing,
     totalPrice: 0,
     paymentPrice: 0,
     offerPriceItems: [],
     eventItems: []
   })
 
-  await tableDb.update({
+  await tableDb.updateOption({
     _id: tableId
   }, {
     $set: {
-      status: tableDb.tableStatus.dining,
+      status: enumerate.tableStatus.dining,
       startDateTime: new Date().getTime(),
       seat: seat,
       orderId: order._id
@@ -59,14 +61,16 @@ export let updateOrderProduct = async (ctx) => {
     }
   }
 
+  doc.productItems = doc.productItems.filter(f => f.quantity > 0)
+
   order.productItems = doc.productItems
   order.totalPrice = doc.productItems.reduce((total, current) => {
-    total += current.price
+    total += current.price * current.quantity
     return total
   }, 0)
-  order.paymentPrice = doc.totalPrice
+  order.paymentPrice = doc.paymentPrice
 
-  await orderDb.update({
+  await orderDb.updateOption({
     _id: order._id
   }, {
     $set: order
@@ -84,8 +88,10 @@ export let paymentOrder = async (ctx) => {
     paymentPrice
   } = ctx.request.body
 
+  console.log(ctx.request.body)
+
   let order = await orderDb.findOne({
-    _id: doc._id
+    _id: orderId
   })
   if (!order) {
     return ctx.body = {
@@ -94,21 +100,21 @@ export let paymentOrder = async (ctx) => {
     }
   }
 
-  await orderDb.update({
+  await orderDb.updateOption({
     _id: order._id
   }, {
     $set: {
       paymentPrice: paymentPrice,
       endDateTime: new Date().getTime(),
-      status: orderDb.orderStaus.finish
+      status: enumerate.orderStatus.finish
     }
   }, {})
 
-  await tableDb.update({
+  await tableDb.updateOption({
     _id: order.tableId
   }, {
     $set: {
-      status: tableDb.tableStatus.available,
+      status: enumerate.tableStatus.available,
     }
   })
 

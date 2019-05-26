@@ -1,4 +1,5 @@
-{"_id":"lap4M2wGbIR6jTmJ","name":"小桌","status":2,"defaultSeat":3,"startDateTime":1558707151747,"seat":4,"orderId":"G9p8TwZbRjdnAP6R"}
+{"startDateTime":1558856091485,"tableId":"lap4M2wGbIR6jTmJ","productItems":[],"status":1,"totalPrice":0,"paymentPrice":0,"offerPriceItems":[],"eventItems":[],"_id":"Zzr8UfVq0UtaWcks","defaultSeat":2,"name":"桌子","seat":6,"orderId":"vF4joQfEvbtQ8l1c"}
+{"_id":"lap4M2wGbIR6jTmJ","name":"小桌","status":3,"defaultSeat":3,"startDateTime":1558778266000,"seat":4,"orderId":"Zzr8UfVq0UtaWcks"}
 {"_id":"o8Y3yCBm75C65HW9","name":"小桌","status":3,"defaultSeat":3,"startDateTime":1558713824144,"seat":3,"orderId":"yTBxYqFrjkDdGsKP"}
-{"_id":"q4ix3jU1xKs0Ugvh","name":"小桌","status":1,"defaultSeat":3}
 {"_id":"q4ix3jU1xKs0Ugvh","name":"小桌","status":3,"defaultSeat":3,"startDateTime":1558715754269,"seat":3,"orderId":"IItB7Kd4JR6LJxzZ"}
+{"startDateTime":1558858284983,"tableId":"lap4M2wGbIR6jTmJ","productItems":[],"status":3,"totalPrice":0,"paymentPrice":0,"offerPriceItems":[],"eventItems":[],"_id":"Zzr8UfVq0UtaWcks","defaultSeat":2,"name":"桌子","seat":2,"orderId":"qZlTkr8AUlC02AHn"}

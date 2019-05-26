@@ -1,5 +1,5 @@
 const Datastore = require('nedb-promises')
-let datastore = Datastore.create('./src/db/dbfile/table.db')
+let datastore = Datastore.create('./src/db/dbfile/remark.db')
 
 let find = async (query) => {
   return datastore.find(query)
@@ -8,7 +8,6 @@ let findOne = async (query) => {
   return datastore.findOne(query)
 }
 let insert = async (doc) => {
-
   return datastore.insert(doc)
 }
 let findPageWithSorted = (query, sort = {}, page = 0, perPage = 10) => {

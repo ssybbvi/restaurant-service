@@ -1,11 +1,8 @@
 export let Get = (ctx) => {
-
-  if (true) {
-    return ctx.body = {
-      result: 'get',
-      name: "xxx",
-      para: "xx"
-    }
+  return ctx.body = {
+    result: 'get',
+    name: "xxx",
+    para: "xx"
   }
 
   ctx.body = {

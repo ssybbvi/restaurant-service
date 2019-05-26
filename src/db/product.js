@@ -8,6 +8,7 @@ let findOne = async (query) => {
   return datastore.findOne(query)
 }
 let insert = async (doc) => {
+  doc.status = 1
   return datastore.insert(doc)
 }
 let findPageWithSorted = (query, sort = {}, page = 0, perPage = 10) => {
@@ -17,17 +18,18 @@ let findPageWithSorted = (query, sort = {}, page = 0, perPage = 10) => {
     .skip(page * perPage)
 }
 
-let update = async (query, update, options) => {
+let update = async (doc) => {
+  return updateOption({
+    _id: doc._id
+  }, doc)
+}
+
+let updateOption = async (query, update, options) => {
   return datastore.update(query, update, options)
 }
 
 let remove = async (query) => {
   return datastore.remove(query)
-}
-
-let productStatus = {
-  normal: 1,
-  gift: 2,
 }
 
 module.exports = {
@@ -36,6 +38,6 @@ module.exports = {
   insert,
   findPageWithSorted,
   update,
+  updateOption,
   remove,
-  productStatus
 }

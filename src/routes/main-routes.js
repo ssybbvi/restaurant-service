@@ -19,6 +19,11 @@ router
   .put('/table', controllers.table.Put)
   .delete('/table', controllers.table.Remove)
 
+  .get('/remark', controllers.remark.Get)
+  .post('/remark', controllers.remark.Post)
+  .put('/remark', controllers.remark.Put)
+  .delete('/remark', controllers.remark.Remove)
+
   .get('/tableArea', controllers.tableArea.Get)
   .post('/tableArea', controllers.tableArea.Post)
   .put('/tableArea', controllers.tableArea.Put)
@@ -37,5 +42,5 @@ router
 
   .post('/opentable', controllers.restaurant.OpenTable)
   .put('/updateOrderProduct', controllers.restaurant.updateOrderProduct)
-  .put('/paymentOrder', controllers.restaurant.paymentOrder)
+  .post('/paymentOrder', controllers.restaurant.paymentOrder)
 module.exports = router

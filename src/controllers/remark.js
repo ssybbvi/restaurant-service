@@ -1,8 +1,11 @@
-import * as tableDb from '../db/table'
+import * as remarkDb from '../db/remark'
 
 export let Get = async (ctx) => {
   let query = ctx.query
-  await tableDb.find(query).then((resolve) => {
+  if (query.type) {
+    query.type = Number.parseInt(query.type)
+  }
+  await remarkDb.find(query).then((resolve) => {
     ctx.body = {
       result: true,
       data: resolve
@@ -17,8 +20,7 @@ export let Get = async (ctx) => {
 
 export let Post = async (ctx) => {
   let body = ctx.request.body
-  body.status = 1
-  await tableDb.insert(body).then((resolve) => {
+  await remarkDb.insert(body).then((resolve) => {
     ctx.body = {
       result: true,
       data: resolve
@@ -34,7 +36,7 @@ export let Post = async (ctx) => {
 
 export let Put = async (ctx) => {
   let body = ctx.request.body
-  await tableDb.update(body).then((resolve) => {
+  await remarkDb.update(body).then((resolve) => {
     ctx.body = {
       result: true,
       data: resolve
@@ -49,7 +51,8 @@ export let Put = async (ctx) => {
 
 export let Remove = async (ctx) => {
   let body = ctx.request.body
-  await tableDb.remove(body).then((resolve) => {
+  console.log(ctx)
+  await remarkDb.remove(body).then((resolve) => {
     ctx.body = {
       result: true,
       data: resolve
