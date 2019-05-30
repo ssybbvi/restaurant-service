@@ -1,8 +1,9 @@
-{"name":"大桌","areaId":"3ixR82B6jE5O6ebR","defaultSeat":4,"status":3,"_id":"47K2npsuSnwaToGF","startDateTime":1559225727957,"seat":5,"orderId":"G6N6cXuJGH53mvj7"}
+{"name":"大桌","areaId":"3ixR82B6jE5O6ebR","defaultSeat":4,"status":3,"_id":"47K2npsuSnwaToGF","startDateTime":1559229243945,"seat":5,"orderId":"LskVX2p8u0q2GKIK"}
 {"name":"大桌2号","areaId":"3ixR82B6jE5O6ebR","defaultSeat":5,"status":1,"_id":"Y8r9yX5rHGjp9YAP"}
 {"name":"大桌3","areaId":"Tp20YYfwzxbsvWCm","defaultSeat":4,"status":1,"_id":"sBUHGMGZVWIyuuJL"}
-{"name":"大桌","areaId":"3ixR82B6jE5O6ebR","defaultSeat":4,"status":1,"_id":"47K2npsuSnwaToGF","startDateTime":1559225727957,"seat":5,"orderId":"G6N6cXuJGH53mvj7"}
-{"name":"大桌","areaId":"3ixR82B6jE5O6ebR","defaultSeat":4,"status":1,"_id":"47K2npsuSnwaToGF","startDateTime":1559225727957,"seat":5,"orderId":"G6N6cXuJGH53mvj7"}
-{"name":"大桌","areaId":"3ixR82B6jE5O6ebR","defaultSeat":4,"status":3,"_id":"47K2npsuSnwaToGF","startDateTime":1559229107727,"seat":4,"orderId":"FcQj3ivxqCDNPr47"}
-{"name":"大桌","areaId":"3ixR82B6jE5O6ebR","defaultSeat":4,"status":1,"_id":"47K2npsuSnwaToGF","startDateTime":1559229107727,"seat":4,"orderId":"FcQj3ivxqCDNPr47"}
-{"name":"大桌","areaId":"3ixR82B6jE5O6ebR","defaultSeat":4,"status":3,"_id":"47K2npsuSnwaToGF","startDateTime":1559229243945,"seat":5,"orderId":"LskVX2p8u0q2GKIK"}
+{"name":"大桌","areaId":"3ixR82B6jE5O6ebR","defaultSeat":4,"status":3,"_id":"47K2npsuSnwaToGF","startDateTime":1559229243945,"seat":5,"orderId":"LskVX2p8u0q2GKIK","label":["A区域","C区域"]}
+{"name":"大桌2号","areaId":"3ixR82B6jE5O6ebR","defaultSeat":5,"status":1,"_id":"Y8r9yX5rHGjp9YAP","label":["C区域"]}
+{"name":"大桌3","areaId":"Tp20YYfwzxbsvWCm","defaultSeat":4,"status":1,"_id":"sBUHGMGZVWIyuuJL","label":["C区域"]}
+{"name":"主席桌","aera":[],"defaultSeat":2,"label":["B区域"],"_id":"sBUHGMGZVWIyuuJL"}
+{"name":"xxxx","aera":[],"defaultSeat":2,"label":["C区域"],"status":1,"_id":"fqn9UrBC5KnE2XlA"}
+{"name":"cccc","aera":[],"defaultSeat":2,"label":["A区域"],"status":1,"_id":"kmtgSK2D3sHn79UE"}

@@ -34,6 +34,11 @@ router
   .put('/product', controllers.product.Put)
   .delete('/product', controllers.product.Remove)
 
+  .get('/productType', controllers.productType.Get)
+  .post('/productType', controllers.productType.Post)
+  .put('/productType', controllers.productType.Put)
+  .delete('/productType', controllers.productType.Remove)
+
   .get('/order', controllers.order.Get)
   .get('/order/:_id', controllers.order.GetOne)
   .post('/order', controllers.order.Post)

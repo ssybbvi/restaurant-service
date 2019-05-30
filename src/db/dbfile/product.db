@@ -2,3 +2,15 @@
 {"name":"麻婆豆腐","price":2,"label":["选项1","选项2"],"stock":0,"_id":"c6cTm82ibEyme8D5"}
 {"name":"小炒肉","price":4,"label":["选项3","选项4"],"stock":0,"_id":"l1Gg7kwS87ovts0m"}
 {"name":"红烧猪脚","price":6,"label":["选项3"],"stock":0,"_id":"whpQVbXn5VXqYbSy"}
+{"_id":"Q2yxX3LxLelSVEk3"}
+{"$$deleted":true,"_id":"Q2yxX3LxLelSVEk3"}
+{"_id":"c6cTm82ibEyme8D5"}
+{"$$deleted":true,"_id":"c6cTm82ibEyme8D5"}
+{"name":"小炒肉","price":4,"label":["选项3","选项4"],"stock":0,"_id":"l1Gg7kwS87ovts0m","labelIds":["afx6HNbPCp8Z2Ygr","Y9BiVv8GUXFyNE1y"]}
+{"name":"小炒肉","price":4,"label":["选项3","选项4"],"stock":0,"_id":"l1Gg7kwS87ovts0m","labelIds":["afx6HNbPCp8Z2Ygr","Y9BiVv8GUXFyNE1y"]}
+{"name":"小炒肉","price":4,"label":["汤类","🥬"],"stock":0,"_id":"l1Gg7kwS87ovts0m","labelIds":["afx6HNbPCp8Z2Ygr","Y9BiVv8GUXFyNE1y"]}
+{"name":"红烧猪脚","price":6,"label":["主食"],"stock":0,"_id":"whpQVbXn5VXqYbSy"}
+{"name":"红烧鱼块","price":10,"label":["汤类","肉类","主食"],"stock":0,"_id":"whpQVbXn5VXqYbSy"}
+{"name":"xxxx","price":2,"label":["汤类"],"stock":0,"status":1,"_id":"5E8l8fohrnpUES5d"}
+{"name":"df","price":3,"label":["主食"],"stock":0,"status":1,"_id":"VftYqPukw0IrhZ2y"}
+{"name":"ffff","price":2,"label":["汤类"],"stock":0,"status":1,"_id":"9UkLzhxzTpTr5whD"}
