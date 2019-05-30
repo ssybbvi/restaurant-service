@@ -35,8 +35,9 @@ export let Post = async (ctx) => {
 }
 
 export let Put = async (ctx) => {
-  let body = ctx.request.body
-  await remarkDb.update(body).then((resolve) => {
+  await remarkDb.updateOption({
+    _id: ctx.query._id
+  }, ctx.request.body).then((resolve) => {
     ctx.body = {
       result: true,
       data: resolve
@@ -51,7 +52,6 @@ export let Put = async (ctx) => {
 
 export let Remove = async (ctx) => {
   let body = ctx.request.body
-  console.log(ctx)
   await remarkDb.remove(body).then((resolve) => {
     ctx.body = {
       result: true,

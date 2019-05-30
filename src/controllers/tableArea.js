@@ -17,6 +17,7 @@ export let Get = async (ctx) => {
 
 export let Post = async (ctx) => {
   let body = ctx.request.body
+  console.log(body)
   await tableAreaDb.insert(body).then((resolve) => {
     ctx.body = {
       result: true,
@@ -32,8 +33,9 @@ export let Post = async (ctx) => {
 }
 
 export let Put = async (ctx) => {
-  let body = ctx.request.body
-  await tableAreaDb.update(body.query, body.doc).then((resolve) => {
+  await tableAreaDb.updateOption({
+    _id: ctx.query._id
+  }, ctx.request.body).then((resolve) => {
     ctx.body = {
       result: true,
       data: resolve

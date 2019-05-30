@@ -51,10 +51,9 @@ export let Post = async (ctx) => {
 }
 
 export let Put = async (ctx) => {
-  let body = ctx.request.body
-  console.log("bodyPut",
-    body)
-  await orderDb.update(body).then((resolve) => {
+  await orderDb.updateOption({
+    _id: ctx.query._id
+  }, ctx.request.body).then((resolve) => {
     ctx.body = {
       result: true,
       data: resolve

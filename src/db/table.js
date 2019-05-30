@@ -18,12 +18,6 @@ let findPageWithSorted = (query, sort = {}, page = 0, perPage = 10) => {
     .skip(page * perPage)
 }
 
-let update = async (doc) => {
-  return updateOption({
-    _id: doc._id
-  }, doc)
-}
-
 let updateOption = async (query, update, options) => {
   return datastore.update(query, update, options)
 }
@@ -37,7 +31,6 @@ module.exports = {
   findOne,
   insert,
   findPageWithSorted,
-  update,
   updateOption,
   remove,
 }

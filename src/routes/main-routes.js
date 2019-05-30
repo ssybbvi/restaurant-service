@@ -43,4 +43,7 @@ router
   .post('/opentable', controllers.restaurant.OpenTable)
   .put('/updateOrderProduct', controllers.restaurant.updateOrderProduct)
   .post('/paymentOrder', controllers.restaurant.paymentOrder)
+  .put('/editOrderProduectItems', controllers.restaurant.editOrderProduectItems)
+  .delete('/debugOrder', controllers.restaurant.debugOrder)
+  .put('/orderMake', controllers.restaurant.orderMake)
 module.exports = router

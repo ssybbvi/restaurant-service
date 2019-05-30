@@ -1,6 +1,7 @@
 import {
   SystemConfig
 } from '../config'
+import * as crypto from "crypto"
 
 // 截取字符串，多余的部分用...代替
 export let setString = (str, len) => {
@@ -60,4 +61,11 @@ export let getJsonLength = (jsonData) => {
     arr.push(jsonData[item])
   }
   return arr.length
+}
+
+export let uid = (len = 10) => {
+  return crypto.randomBytes(Math.ceil(Math.max(8, len * 2)))
+    .toString('base64')
+    .replace(/[+\/]/g, '')
+    .slice(0, len);
 }

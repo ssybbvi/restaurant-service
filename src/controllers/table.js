@@ -2,6 +2,7 @@ import * as tableDb from '../db/table'
 
 export let Get = async (ctx) => {
   let query = ctx.query
+
   await tableDb.find(query).then((resolve) => {
     ctx.body = {
       result: true,
@@ -33,8 +34,9 @@ export let Post = async (ctx) => {
 }
 
 export let Put = async (ctx) => {
-  let body = ctx.request.body
-  await tableDb.update(body).then((resolve) => {
+  await tableDb.updateOption({
+    _id: ctx.query._id
+  }, ctx.request.body).then((resolve) => {
     ctx.body = {
       result: true,
       data: resolve
