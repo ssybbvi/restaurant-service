@@ -1,7 +1,11 @@
 import baseDb from './basedb'
+import Datastore from 'nedb-promises'
 
-export default class ProductDb extends baseDb {
+class ProductDb extends baseDb {
   constructor() {
-    super('./src/db/dbfile/product.db')
+    let datastore = Datastore.create('./src/db/dbfile/product.db')
+    super(datastore)
   }
 }
+
+export default new ProductDb()

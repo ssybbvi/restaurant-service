@@ -1,7 +1,11 @@
 import baseDb from './basedb'
+import Datastore from 'nedb-promises'
 
-export default class RemarkDb extends baseDb {
+class RemarkDb extends baseDb {
   constructor() {
-    super('./src/db/dbfile/remark.db')
+    let datastore = Datastore.create('./src/db/dbfile/remark.db')
+    super(datastore)
   }
 }
+
+export default new RemarkDb()

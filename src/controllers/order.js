@@ -1,20 +1,24 @@
-import OrderItemDb from '../db/orderItem'
-import OrderDb from '../db/order'
-let orderItemDB = new OrderItemDb()
-let orderDb = new OrderDb()
+import orderDb from '../db/order'
+import {
+  HttpOk,
+  HttpError
+} from './httpHelp'
 
 export let GetOne = async (ctx) => {
-  let order = await orderDb.findOne(ctx.params)
-  let orderItems = await orderItemDB.find({
-    orderId: order._id
-  })
-  order.productItems = orderItems
+  let {
+    _id
+  } = ctx.params
 
-  ctx.body = {
-    result: true,
-    data: order
+  let order = await orderDb.findOne({
+    _id
+  })
+
+  if (!order) {
+    HttpError(ctx, "无此订单")
+    return
   }
 
+  HttpOk(ctx, order)
 }
 
 export let Get = async (ctx) => {

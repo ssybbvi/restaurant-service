@@ -1,6 +1,4 @@
-import TableAreaDb from '../db/tableArea'
-
-let tableAreaDb = new TableAreaDb()
+import tableAreaDb from '../db/tableArea'
 
 export let Get = async (ctx) => {
   let query = ctx.query

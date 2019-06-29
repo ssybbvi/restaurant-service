@@ -1,3 +1,6 @@
-{"name":"中桌","aera":[],"defaultSeat":2,"label":["A区域"],"status":3,"_id":"PVa40hw8N3jD9pED","startDateTime":1561797079168,"seat":3,"orderId":"Rt3twWqlRVPkp5A7"}
-{"name":"大桌2","aera":[],"defaultSeat":2,"status":1,"_id":"oMluDnvmy1bR38AZ","startDateTime":1561794508889,"seat":2,"orderId":"zkmHRuHsUCpTkm8G"}
-{"name":"中桌3","aera":[],"defaultSeat":2,"label":["B区域"],"_id":"vHPKIkb3ERlCQxh2"}
+{"name":"302","area":"C区域","defaultSeat":2,"status":1,"_id":"A6dlc6NqF5JYKjtb","startDateTime":1561822509169,"seat":3,"orderId":"gBL7rswH4IOQEq4r"}
+{"name":"101","area":"A区域","defaultSeat":2,"status":1,"_id":"D3OLv6f8AnosOznN"}
+{"name":"203","area":"E区域","defaultSeat":2,"status":1,"_id":"DwLRPMwy1IsS21uu","startDateTime":1561821176182,"seat":4,"orderId":"GmyMxqDzo9QAxFwV"}
+{"name":"102","area":"A区域","defaultSeat":2,"status":1,"_id":"JTt8m3aMMHk0Wziv","startDateTime":1561814433807,"seat":3,"orderId":"TbCzdLAb99Rii2Ug"}
+{"name":"201","area":"E区域","defaultSeat":2,"status":1,"_id":"gGinEt83l15dYRSi"}
+{"name":"301","area":"C区域","defaultSeat":2,"status":1,"_id":"wE7xBJKaoCER31j1","startDateTime":1561823313121,"seat":3,"orderId":"lW8N6Do0VSooRsFY"}

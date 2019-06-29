@@ -1,6 +1,4 @@
-import OrderItemDb from '../db/orderItem'
-
-let orderItemDb = new OrderItemDb()
+import orderItemDb from '../db/orderItem'
 
 export let Get = async (ctx) => {
   let query = ctx.query

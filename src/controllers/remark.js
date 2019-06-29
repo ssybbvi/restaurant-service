@@ -1,6 +1,4 @@
-import ReamrkDb from '../db/remark'
-
-let remarkDb = new ReamrkDb()
+import remarkDb from '../db/remark'
 
 export let Get = async (ctx) => {
   let query = ctx.query

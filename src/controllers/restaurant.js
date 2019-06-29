@@ -1,38 +1,35 @@
-import TableAreaDb from '../db/tableArea'
-import OrderItemDb from '../db/orderItem'
-import OrderDb from '../db/order'
-import TableDb from '../db/table'
-
-let tableDb = new TableDb()
-let orderItemDB = new OrderItemDb()
-let orderDb = new OrderDb()
-let tableAreaDb = new TableAreaDb()
-
+import tableAreaDb from '../db/tableArea'
+import orderItemDB from '../db/orderItem'
+import orderDb from '../db/order'
+import tableDb from '../db/table'
 import enumerate from '../db/enumerate'
+import {
+  HttpOk,
+  HttpError
+} from './httpHelp'
 
 export let OpenTable = async (ctx) => {
   let {
     tableId,
     seat
   } = ctx.request.body
+  console.log("OpenTable", ctx.request.body)
 
   let table = await tableDb.findOne({
     _id: tableId
   })
+
+  console.log("table", table)
+
   if (table.status != enumerate.tableStatus.available) {
-    return ctx.body = {
-      result: false,
-      data: "桌子使用中"
-    }
+    HttpError(ctx, "桌子使用中")
+    return
   }
-  let tableArea = await tableAreaDb.findOne({
-    _id: table.areaId
-  })
 
   let order = await orderDb.insert({
-    startDateTime: new Date().getTime(),
+    startDateTime: Date.now,
     tableName: table.name,
-    tableAreaName: tableArea && tableArea.name || "暂无",
+    tableAreaName: table.area,
     status: enumerate.orderStatus.processing,
     totalPrice: 0,
     paymentPrice: 0,
@@ -49,12 +46,9 @@ export let OpenTable = async (ctx) => {
       seat: seat,
       orderId: order._id
     }
-  }, {})
+  })
 
-  return ctx.body = {
-    result: true,
-    data: order
-  }
+  HttpOk(ctx, order)
 }
 
 export let orderMake = async (ctx) => {
@@ -66,10 +60,8 @@ export let orderMake = async (ctx) => {
     _id: orderId
   })
   if (!order) {
-    return ctx.body = {
-      result: false,
-      data: "无此订单"
-    }
+    HttpError(ctx, "无此订单")
+    return
   }
 
   let orderItems = await orderItemDB.find({
@@ -104,10 +96,8 @@ export let paymentOrder = async (ctx) => {
     _id: orderId
   })
   if (!order) {
-    return ctx.body = {
-      result: false,
-      data: "无此订单"
-    }
+    HttpError(ctx, "无此订单")
+    return
   }
 
   await orderDb.updateOption({
@@ -119,7 +109,52 @@ export let paymentOrder = async (ctx) => {
       remark: remark,
       status: enumerate.orderStatus.finish
     }
-  }, {})
+  })
+
+  let xx = await tableDb.updateOption({
+    orderId: orderId
+  }, {
+    $set: {
+      status: enumerate.tableStatus.available,
+    }
+  })
+  console.log("xx", xx)
+
+  HttpOk(ctx, null)
+  return
+}
+
+export let cancelOrder = async (ctx) => {
+  let {
+    orderId,
+  } = ctx.request.body
+
+  let order = await orderDb.findOne({
+    _id: orderId
+  })
+  if (!order) {
+    HttpError(ctx, "无此订单")
+    return
+  }
+
+  let orderItems = await orderItemDB.find({
+    $or: [{
+      status: enumerate.productStatus.finish
+    }, {
+      status: enumerate.productStatus.cooking
+    }]
+  })
+
+  if (orderItems) {
+    HttpError(ctx, "已有菜品下单到厨房了，无法取消")
+    return
+  }
+
+  await orderDb.updateOption({
+    _id: orderId
+  }, {
+    status: enumerate.orderStatus.cancel
+  })
 
   await tableDb.updateOption({
     orderId: orderId
@@ -129,11 +164,7 @@ export let paymentOrder = async (ctx) => {
     }
   })
 
-  ctx.body = {
-    result: true,
-    data: null
-  }
-  return
+  HttpOk(ctx, null)
 }
 
 export let debugOrder = async (ctx) => {
@@ -145,10 +176,7 @@ export let debugOrder = async (ctx) => {
     _id: _id
   })
   if (!order) {
-    return ctx.body = {
-      result: false,
-      data: "无此订单"
-    }
+    HttpError(ctx, "无此订单")
   }
 
   await orderDb.remove({
@@ -163,8 +191,5 @@ export let debugOrder = async (ctx) => {
     }
   })
 
-  return ctx.body = {
-    result: true,
-    data: null
-  }
+  HttpOk(ctx, null)
 }

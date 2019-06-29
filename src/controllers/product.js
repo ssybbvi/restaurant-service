@@ -1,6 +1,4 @@
-import ProductDb from '../db/product'
-
-let productDb = new ProductDb()
+import productDb from '../db/product'
 
 export let Get = async (ctx) => {
   let query = ctx.query

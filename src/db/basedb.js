@@ -1,33 +1,34 @@
-import Datastore from 'nedb-promises'
-
 export default class BaseDb {
-  constructor(dbFile) {
-    this.datastore = Datastore.create(dbFile)
+  constructor(_datastore) {
+    this.datastore = _datastore
   }
 
-  find(query) {
-    return this.datastore.find(query)
+  async find(query) {
+    return await this.datastore.find(query)
   }
 
-  findOne(query) {
-    return this.datastore.findOne(query)
+  async findOne(query) {
+    return await this.datastore.findOne(query)
   }
 
-  insert(doc) {
-    return this.datastore.insert(doc)
+  async insert(doc) {
+    return await this.datastore.insert(doc)
   }
-  findPageWithSorted(query, sort = {}, page = 0, perPage = 10) {
-    return this.datastore.find(query)
+
+  async findPageWithSorted(query, sort = {}, page = 0, perPage = 10) {
+    return await this.datastore.find(query)
       .sort(sort)
       .limit(perPage)
       .skip(page * perPage)
   }
 
-  updateOption(query, update, options) {
-    return this.datastore.update(query, update, options)
+  async updateOption(query, update, options = {
+    multi: true
+  }) {
+    return await this.datastore.update(query, update, options)
   }
 
-  remove(query) {
-    return this.datastore.remove(query)
+  async remove(query) {
+    return await this.datastore.remove(query)
   }
 }

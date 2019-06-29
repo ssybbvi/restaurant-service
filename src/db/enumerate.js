@@ -6,6 +6,7 @@ export default {
     clearing: 4
   },
   orderStatus: {
+    cancel: 0,
     processing: 1,
     finish: 2
   },

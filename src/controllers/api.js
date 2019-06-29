@@ -1,10 +1,4 @@
 export let Get = (ctx) => {
-  return ctx.body = {
-    result: 'get',
-    name: "xxx",
-    para: "xx"
-  }
-
   ctx.body = {
     result: 'get',
     name: ctx.params.name,

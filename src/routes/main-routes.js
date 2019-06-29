@@ -51,4 +51,5 @@ router
   .post('/paymentOrder', controllers.restaurant.paymentOrder)
   .delete('/debugOrder', controllers.restaurant.debugOrder)
   .put('/orderMake', controllers.restaurant.orderMake)
+  .put('/cancelOrder', controllers.restaurant.cancelOrder)
 module.exports = router
