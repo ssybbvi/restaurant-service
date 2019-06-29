@@ -1,10 +1,10 @@
-import TableAreaDb from '../db/tableArea'
+import OrderItemDb from '../db/orderItem'
 
-let tableAreaDb = new TableAreaDb()
+let orderItemDb = new OrderItemDb()
 
 export let Get = async (ctx) => {
   let query = ctx.query
-  await tableAreaDb.find(query).then((resolve) => {
+  await orderItemDb.find(query).then((resolve) => {
     ctx.body = {
       result: true,
       data: resolve
@@ -19,8 +19,7 @@ export let Get = async (ctx) => {
 
 export let Post = async (ctx) => {
   let body = ctx.request.body
-  console.log(body)
-  await tableAreaDb.insert(body).then((resolve) => {
+  await orderItemDb.insert(body).then((resolve) => {
     ctx.body = {
       result: true,
       data: resolve
@@ -35,9 +34,9 @@ export let Post = async (ctx) => {
 }
 
 export let Put = async (ctx) => {
-  await tableAreaDb.updateOption({
-    _id: ctx.query._id
-  }, ctx.request.body).then((resolve) => {
+  await orderItemDb.updateOption(ctx.query, {
+    $set: ctx.request.body
+  }).then((resolve) => {
     ctx.body = {
       result: true,
       data: resolve
@@ -52,7 +51,7 @@ export let Put = async (ctx) => {
 
 export let Remove = async (ctx) => {
   let body = ctx.request.body
-  await tableAreaDb.remove(body).then((resolve) => {
+  await orderItemDb.remove(body).then((resolve) => {
     ctx.body = {
       result: true,
       data: resolve

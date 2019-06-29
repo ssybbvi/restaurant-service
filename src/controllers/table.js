@@ -1,4 +1,6 @@
-import * as tableDb from '../db/table'
+import TableDb from '../db/table'
+
+let tableDb = new TableDb()
 
 export let Get = async (ctx) => {
   let query = ctx.query

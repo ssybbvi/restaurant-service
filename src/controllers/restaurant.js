@@ -1,8 +1,14 @@
-import * as tableDb from '../db/table'
-import * as orderDb from '../db/order'
-import * as productDb from '../db/product'
+import TableAreaDb from '../db/tableArea'
+import OrderItemDb from '../db/orderItem'
+import OrderDb from '../db/order'
+import TableDb from '../db/table'
+
+let tableDb = new TableDb()
+let orderItemDB = new OrderItemDb()
+let orderDb = new OrderDb()
+let tableAreaDb = new TableAreaDb()
+
 import enumerate from '../db/enumerate'
-import * as Common from '../tool/Common'
 
 export let OpenTable = async (ctx) => {
   let {
@@ -19,16 +25,14 @@ export let OpenTable = async (ctx) => {
       data: "桌子使用中"
     }
   }
-  let tableArea = await tableDb.findOne({
+  let tableArea = await tableAreaDb.findOne({
     _id: table.areaId
   })
 
   let order = await orderDb.insert({
     startDateTime: new Date().getTime(),
-    tableId: tableId,
     tableName: table.name,
     tableAreaName: tableArea && tableArea.name || "暂无",
-    productItems: [],
     status: enumerate.orderStatus.processing,
     totalPrice: 0,
     paymentPrice: 0,
@@ -53,97 +57,6 @@ export let OpenTable = async (ctx) => {
   }
 }
 
-export let updateOrderProduct = async (ctx) => {
-  let doc = ctx.request.body
-  let order = await orderDb.findOne({
-    _id: doc._id
-  })
-  if (!order) {
-    return ctx.body = {
-      result: false,
-      data: "无此订单"
-    }
-  }
-
-  return ctx.body = {
-    result: true,
-    data: "这个方法作废"
-  }
-}
-
-export let editOrderProduectItems = async (ctx) => {
-  let {
-    _id,
-    productItems
-  } = ctx.request.body
-
-  let order = await orderDb.findOne({
-    _id: _id
-  })
-  if (!order) {
-    return ctx.body = {
-      result: false,
-      data: "无此订单"
-    }
-  }
-
-  let newProductItems = []
-  for (let index = 0; index < productItems.length; index++) {
-    const item = productItems[index];
-    if (item.isDelete) {
-      continue
-    }
-    let product = await productDb.findOne({
-      _id: item.productId
-    })
-    if (!product) {
-      return ctx.body = {
-        result: false,
-        data: `无此菜品 productId=${item.productId}`
-      }
-    }
-
-    let productItem = {
-      productId: item.productId,
-      isGift: item.isGift,
-      isTimeout: item.isTimeout,
-      isExpedited: item.isExpedited,
-      isBale: item.isBale,
-      remark: item.remark,
-      name: product.name,
-      price: product.price,
-      _id: item._id || Common.uid(),
-      status: item.status,
-      isDelete: false
-    }
-    newProductItems.push(productItem)
-  }
-  let totalPrice = newProductItems.reduce((total, current) => {
-    total += current.price
-    return total
-  }, 0)
-  let paymentPrice = totalPrice
-
-  await orderDb.updateOption({
-    _id: _id
-  }, {
-    $set: {
-      productItems: newProductItems,
-      totalPrice: totalPrice,
-      paymentPrice: paymentPrice
-    }
-  }, {})
-
-  let lastOrder = await orderDb.findOne({
-    _id: _id
-  })
-
-  return ctx.body = {
-    result: true,
-    data: lastOrder
-  }
-}
-
 export let orderMake = async (ctx) => {
   let {
     orderId
@@ -159,35 +72,32 @@ export let orderMake = async (ctx) => {
     }
   }
 
-  for (let index = 0; index < order.productItems.length; index++) {
-    let item = order.productItems[index]
+  let orderItems = await orderItemDB.find({
+    orderId: orderId
+  })
+  for (let index = 0; index < orderItems.length; index++) {
+    const item = orderItems[index];
     if (item.status == enumerate.productStatus.normal && item.isTimeout === false) {
-      item.status = enumerate.productStatus.cooking
+      await orderItemDB.updateOption({
+        _id: item._id,
+      }, {
+        $set: {
+          status: enumerate.productStatus.cooking
+        }
+      })
     }
   }
 
-  await orderDb.updateOption({
-    _id: orderId
-  }, {
-    $set: {
-      productItems: order.productItems
-    }
-  }, {})
-
-  let lastOrder = await orderDb.findOne({
-    _id: orderId
-  })
-
   return ctx.body = {
     result: true,
-    data: lastOrder
   }
 }
 
 export let paymentOrder = async (ctx) => {
   let {
     orderId,
-    paymentPrice
+    paymentPrice,
+    remark
   } = ctx.request.body
 
   let order = await orderDb.findOne({
@@ -206,22 +116,24 @@ export let paymentOrder = async (ctx) => {
     $set: {
       paymentPrice: paymentPrice,
       endDateTime: new Date().getTime(),
+      remark: remark,
       status: enumerate.orderStatus.finish
     }
   }, {})
 
   await tableDb.updateOption({
-    _id: order.tableId
+    orderId: orderId
   }, {
     $set: {
       status: enumerate.tableStatus.available,
     }
   })
 
-  return ctx.body = {
+  ctx.body = {
     result: true,
     data: null
   }
+  return
 }
 
 export let debugOrder = async (ctx) => {

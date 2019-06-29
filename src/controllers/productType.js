@@ -1,4 +1,6 @@
-import * as productTypeDb from '../db/productType'
+import ProductTypeDb from '../db/productType'
+
+let productTypeDb = new ProductTypeDb()
 
 export let Get = async (ctx) => {
   let query = ctx.query

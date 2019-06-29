@@ -34,6 +34,11 @@ router
   .put('/product', controllers.product.Put)
   .delete('/product', controllers.product.Remove)
 
+  .get('/orderItem', controllers.orderItem.Get)
+  .post('/orderItem', controllers.orderItem.Post)
+  .put('/orderItem', controllers.orderItem.Put)
+  .delete('/orderItem', controllers.orderItem.Remove)
+
   .get('/productType', controllers.productType.Get)
   .post('/productType', controllers.productType.Post)
   .put('/productType', controllers.productType.Put)
@@ -41,14 +46,9 @@ router
 
   .get('/order', controllers.order.Get)
   .get('/order/:_id', controllers.order.GetOne)
-  .post('/order', controllers.order.Post)
-  .put('/order', controllers.order.Put)
-  .delete('/order', controllers.order.Remove)
 
   .post('/opentable', controllers.restaurant.OpenTable)
-  .put('/updateOrderProduct', controllers.restaurant.updateOrderProduct)
   .post('/paymentOrder', controllers.restaurant.paymentOrder)
-  .put('/editOrderProduectItems', controllers.restaurant.editOrderProduectItems)
   .delete('/debugOrder', controllers.restaurant.debugOrder)
   .put('/orderMake', controllers.restaurant.orderMake)
 module.exports = router
