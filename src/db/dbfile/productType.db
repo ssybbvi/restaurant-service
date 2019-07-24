@@ -1,6 +1,3 @@
-{"name":"肉类","_id":"Ma2sUCciZISFGmfb"}
-{"name":"xx2222","_id":"OFsLAxuPY176VfXd"}
-{"name":"汤类","_id":"WhMlSOpkTZyl8Buo"}
-{"name":"主食","_id":"Y9BiVv8GUXFyNE1y"}
-{"name":"🥬","_id":"afx6HNbPCp8Z2Ygr"}
-{"$$deleted":true,"_id":"OFsLAxuPY176VfXd"}
+{"name":"蔬菜","createAt":1563957404801,"_id":"OTomw7GFbkuUwK89"}
+{"name":"肉类","createAt":1563957404802,"_id":"d5qXSfzJKS1gbo71"}
+{"name":"汤类","createAt":1563957404802,"_id":"ijozD97fmi0vpDVG"}

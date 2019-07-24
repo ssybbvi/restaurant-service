@@ -10,6 +10,9 @@ import ErrorRoutesCatch from './middleware/ErrorRoutesCatch'
 import ErrorRoutes from './routes/error-routes'
 import jwt from 'koa-jwt'
 import fs from 'fs'
+import shedulingSocket from './socket/sheduling'
+import http from 'http'
+import socket from 'socket.io'
 // import PluginLoader from './lib/PluginLoader'
 
 const app = new Koa2()
@@ -19,13 +22,16 @@ const publicKey = fs.readFileSync(path.join(__dirname, '../publicKey.pub'))
 
 app
   .use((ctx, next) => {
-    if (ctx.request.header.host.split(':')[0] === 'localhost' || ctx.request.header.host.split(':')[0] === '127.0.0.1') {
-      ctx.set('Access-Control-Allow-Origin', '*')
-    } else {
-      ctx.set('Access-Control-Allow-Origin', SystemConfig.HTTP_server_host)
-    }
-    ctx.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-    ctx.set('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS')
+    // if (ctx.request.header.host.split(':')[0] === 'localhost' || ctx.request.header.host.split(':')[0] === '127.0.0.1') {
+    //   ctx.set('Access-Control-Allow-Origin', '*')
+    // } else {
+    //   ctx.set('Access-Control-Allow-Origin', SystemConfig.HTTP_server_host)
+    // }
+
+    ctx.set('Access-Control-Expose-Headers', 'Access-Control-*')
+    ctx.set('Access-Control-Allow-Origin', '*')
+    ctx.set('Access-Control-Allow-Headers', 'Access-Control-*, Origin, X-Requested-With, Content-Type, Accept,Authorization')
+    ctx.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, HEAD')
     ctx.set('Access-Control-Allow-Credentials', true) // 允许带上 cookie
     return next()
   })
@@ -43,7 +49,7 @@ app
     textLimit: '10mb'
   })) // Processing request
   // .use(PluginLoader(SystemConfig.System_plugin_path))
-  .use(MainRoutes.routes())
+  //.use(MainRoutes.routes())
   .use(MainRoutes.routes())
   .use(MainRoutes.allowedMethods())
   .use(ErrorRoutes())
@@ -58,7 +64,15 @@ if (env === 'development') { // logger
   })
 }
 
-app.listen(SystemConfig.API_server_port)
+const server = http.createServer(app.callback());
+const io = socket(server);
+app.context.io = io
+
+shedulingSocket(io);
+
+server.listen(SystemConfig.API_server_port);
+
+//app.listen(SystemConfig.API_server_port)
 
 console.log('Now start API server on port ' + SystemConfig.API_server_port + '...')
 

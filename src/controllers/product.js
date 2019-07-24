@@ -1,34 +1,29 @@
 import productDb from '../db/product'
+import {
+  HttpOk,
+  HttpError
+} from './httpHelp'
 
 export let Get = async (ctx) => {
   let query = ctx.query
   await productDb.find(query).then((resolve) => {
-    ctx.body = {
-      result: true,
-      data: resolve
-    }
+    HttpOk(ctx, resolve)
+    return
   }).catch(reject => {
-    ctx.body = {
-      result: false,
-      data: reject
-    }
+    HttpError(ctx, reject)
+    return
   })
 }
 
 export let Post = async (ctx) => {
   let body = ctx.request.body
-  console.log(body)
 
   await productDb.insert(body).then((resolve) => {
-    ctx.body = {
-      result: true,
-      data: resolve
-    }
+    HttpOk(ctx, resolve)
+    return
   }).catch(reject => {
-    ctx.body = {
-      result: false,
-      data: reject
-    }
+    HttpError(ctx, reject)
+    return
   })
 
 }
@@ -37,29 +32,40 @@ export let Put = async (ctx) => {
   await productDb.updateOption({
     _id: ctx.query._id
   }, ctx.request.body).then((resolve) => {
-    ctx.body = {
-      result: true,
-      data: resolve
-    }
+    HttpOk(ctx, resolve)
+    return
   }).catch(reject => {
-    ctx.body = {
-      result: false,
-      data: reject
-    }
+    HttpError(ctx, reject)
+    return
   })
 }
 
 export let Remove = async (ctx) => {
   let body = ctx.request.body
   await productDb.remove(body).then((resolve) => {
-    ctx.body = {
-      result: true,
-      data: resolve
-    }
+    HttpOk(ctx, resolve)
+    return
   }).catch(reject => {
-    ctx.body = {
-      result: false,
-      data: reject
-    }
+    HttpError(ctx, reject)
+    return
   })
+}
+
+export let setStock = async (ctx) => {
+  let {
+    productIdWithStockList
+  } = ctx.request.body
+
+  console.log("productIdWithStockList", productIdWithStockList)
+
+  for (let item of productIdWithStockList) {
+    await productDb.updateOption({
+      _id: item._id
+    }, {
+      stock: item.stock
+    })
+  }
+
+  HttpOk(ctx, {})
+  return
 }

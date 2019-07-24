@@ -1,4 +1,8 @@
 import remarkDb from '../db/remark'
+import {
+  HttpOk,
+  HttpError
+} from './httpHelp'
 
 export let Get = async (ctx) => {
   let query = ctx.query
@@ -6,61 +10,90 @@ export let Get = async (ctx) => {
     query.type = Number.parseInt(query.type)
   }
   await remarkDb.find(query).then((resolve) => {
-    ctx.body = {
-      result: true,
-      data: resolve
-    }
+    HttpOk(ctx, resolve)
+    return
   }).catch(reject => {
-    ctx.body = {
-      result: false,
-      data: reject
-    }
+    HttpError(ctx, reject)
+    return
   })
 }
 
 export let Post = async (ctx) => {
-  let body = ctx.request.body
-  await remarkDb.insert(body).then((resolve) => {
-    ctx.body = {
-      result: true,
-      data: resolve
-    }
+  let {
+    content,
+    type
+  } = ctx.request.body
+  content = (content + "").trim()
+  if (content.length == 0) {
+    HttpError(ctx, "不能为空")
+    return
+  }
+
+  let existContent = await remarkDb.findOne({
+    content
+  })
+  if (existContent) {
+    HttpError(ctx, "已有相同")
+    return
+  }
+
+  await remarkDb.insert({
+    content,
+    type
+  }).then((resolve) => {
+    HttpOk(ctx, resolve)
+    return
   }).catch(reject => {
-    ctx.body = {
-      result: false,
-      data: reject
-    }
+    HttpError(ctx, reject)
+    return
   })
 
 }
 
 export let Put = async (ctx) => {
+  let {
+    content,
+    type
+  } = ctx.request.body
+  let _id = ctx.query._id
+  content = (content + "").trim()
+  if (content.length == 0) {
+    HttpError(ctx, "不能为空")
+    return
+  }
+
+  let existContent = await remarkDb.findOne({
+    content,
+    _id: {
+      $ne: _id
+    }
+  })
+  if (existContent) {
+    HttpError(ctx, "已有相同")
+    return
+  }
+
   await remarkDb.updateOption({
-    _id: ctx.query._id
-  }, ctx.request.body).then((resolve) => {
-    ctx.body = {
-      result: true,
-      data: resolve
-    }
+    _id
+  }, {
+    content,
+    type
+  }).then((resolve) => {
+    HttpOk(ctx, resolve)
+    return
   }).catch(reject => {
-    ctx.body = {
-      result: false,
-      data: reject
-    }
+    HttpError(ctx, reject)
+    return
   })
 }
 
 export let Remove = async (ctx) => {
   let body = ctx.request.body
   await remarkDb.remove(body).then((resolve) => {
-    ctx.body = {
-      result: true,
-      data: resolve
-    }
+    HttpOk(ctx, resolve)
+    return
   }).catch(reject => {
-    ctx.body = {
-      result: false,
-      data: reject
-    }
+    HttpError(ctx, reject)
+    return
   })
 }

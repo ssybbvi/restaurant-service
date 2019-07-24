@@ -26,6 +26,13 @@ export let Post = async (ctx) => {
     HttpError(ctx, "名称不能为空")
     return
   }
+
+  area = (area + "").trim()
+  if (area.length == 0) {
+    HttpError(ctx, "区域不能为空")
+    return
+  }
+
   let status = enumerate.tableStatus.available
 
   let existName = await tableDb.findOne({
@@ -49,9 +56,43 @@ export let Post = async (ctx) => {
 }
 
 export let Put = async (ctx) => {
+  let _id = ctx.query._id
+  let {
+    name,
+    area,
+    defaultSeat
+  } = ctx.request.body
+
+  name = (name + "").trim()
+  if (name.length == 0) {
+    HttpError(ctx, "名称不能为空")
+    return
+  }
+
+  area = (area + "").trim()
+  if (area.length == 0) {
+    HttpError(ctx, "区域不能为空")
+    return
+  }
+
+  let existSameName = await tableDb.findOne({
+    name: name,
+    _id: {
+      $ne: _id
+    }
+  })
+  if (existSameName) {
+    HttpError(ctx, "此名字已被使用")
+    return
+  }
+
   await tableDb.updateOption({
-    _id: ctx.query._id
-  }, ctx.request.body).then((resolve) => {
+    _id
+  }, {
+    name,
+    area,
+    defaultSeat
+  }).then((resolve) => {
     HttpOk(ctx, resolve)
   }).catch(reject => {
     HttpError(ctx, reject)

@@ -13,21 +13,16 @@ export let OpenTable = async (ctx) => {
     tableId,
     seat
   } = ctx.request.body
-  console.log("OpenTable", ctx.request.body)
 
   let table = await tableDb.findOne({
     _id: tableId
   })
-
-  console.log("table", table)
-
   if (table.status != enumerate.tableStatus.available) {
     HttpError(ctx, "桌子使用中")
     return
   }
 
   let order = await orderDb.insert({
-    startDateTime: Date.now,
     tableName: table.name,
     tableAreaName: table.area,
     status: enumerate.orderStatus.processing,
@@ -40,12 +35,10 @@ export let OpenTable = async (ctx) => {
   await tableDb.updateOption({
     _id: tableId
   }, {
-    $set: {
-      status: enumerate.tableStatus.dining,
-      startDateTime: new Date().getTime(),
-      seat: seat,
-      orderId: order._id
-    }
+    status: enumerate.tableStatus.dining,
+    startDateTime: Date.now(),
+    seat: seat,
+    orderId: order._id
   })
 
   HttpOk(ctx, order)
@@ -69,27 +62,28 @@ export let orderMake = async (ctx) => {
   })
   for (let index = 0; index < orderItems.length; index++) {
     const item = orderItems[index];
-    if (item.status == enumerate.productStatus.normal && item.isTimeout === false) {
+    if (item.status === enumerate.productStatus.normal && item.isTimeout === false) {
       await orderItemDB.updateOption({
         _id: item._id,
       }, {
-        $set: {
-          status: enumerate.productStatus.cooking
-        }
+        status: enumerate.productStatus.waitCooking,
+        orderMakeDateTime: Date.now()
       })
     }
   }
 
-  return ctx.body = {
-    result: true,
-  }
+  HttpOk(ctx, {})
+  return
 }
 
 export let paymentOrder = async (ctx) => {
   let {
     orderId,
     paymentPrice,
-    remark
+    totalPrice,
+    remark,
+    cashierName,
+    cashierUserId
   } = ctx.request.body
 
   let order = await orderDb.findOne({
@@ -103,22 +97,20 @@ export let paymentOrder = async (ctx) => {
   await orderDb.updateOption({
     _id: order._id
   }, {
-    $set: {
-      paymentPrice: paymentPrice,
-      endDateTime: new Date().getTime(),
-      remark: remark,
-      status: enumerate.orderStatus.finish
-    }
+    paymentPrice: paymentPrice,
+    endDateTime: Date.now(),
+    remark: remark,
+    status: enumerate.orderStatus.finish,
+    totalPrice: totalPrice,
+    cashierName,
+    cashierUserId
   })
 
-  let xx = await tableDb.updateOption({
+  await tableDb.updateOption({
     orderId: orderId
   }, {
-    $set: {
-      status: enumerate.tableStatus.available,
-    }
+    status: enumerate.tableStatus.available,
   })
-  console.log("xx", xx)
 
   HttpOk(ctx, null)
   return
@@ -159,36 +151,7 @@ export let cancelOrder = async (ctx) => {
   await tableDb.updateOption({
     orderId: orderId
   }, {
-    $set: {
-      status: enumerate.tableStatus.available,
-    }
-  })
-
-  HttpOk(ctx, null)
-}
-
-export let debugOrder = async (ctx) => {
-  let {
-    _id
-  } = ctx.request.body
-
-  let order = await orderDb.findOne({
-    _id: _id
-  })
-  if (!order) {
-    HttpError(ctx, "无此订单")
-  }
-
-  await orderDb.remove({
-    _id: order._id
-  })
-
-  await tableDb.updateOption({
-    _id: order.tableId
-  }, {
-    $set: {
-      status: enumerate.tableStatus.available,
-    }
+    status: enumerate.tableStatus.available,
   })
 
   HttpOk(ctx, null)

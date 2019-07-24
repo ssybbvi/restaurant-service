@@ -12,7 +12,15 @@ export default {
   },
   productStatus: {
     normal: 1,
-    cooking: 2,
-    finish: 3
+    waitCooking: 2,
+    cooking: 3,
+    finish: 4
   },
+  userType: {
+    admin: 0,
+    cashier: 1,
+    chef: 2,
+    waiter: 3,
+
+  }
 }

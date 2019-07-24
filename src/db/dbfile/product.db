@@ -1,5 +1,10 @@
-{"name":"xxxx","price":2,"label":["汤类"],"stock":0,"status":1,"_id":"5E8l8fohrnpUES5d"}
-{"name":"ffff","price":2,"label":["汤类"],"stock":0,"status":1,"_id":"9UkLzhxzTpTr5whD"}
-{"name":"df","price":3,"label":["主食"],"stock":0,"status":1,"_id":"VftYqPukw0IrhZ2y"}
-{"name":"小炒肉","price":4,"label":["汤类","🥬"],"stock":0,"_id":"l1Gg7kwS87ovts0m","labelIds":["afx6HNbPCp8Z2Ygr","Y9BiVv8GUXFyNE1y"]}
-{"name":"红烧鱼块","price":10,"label":["汤类","肉类","主食"],"stock":0,"_id":"whpQVbXn5VXqYbSy"}
+{"_id":"dbc","name":"大白菜","price":29,"label":["蔬菜"],"stock":2,"createAt":1563957404806}
+{"_id":"dy","name":"豆芽","price":3,"label":["蔬菜"],"stock":2,"createAt":1563957404806}
+{"_id":"jt","name":"鸡汤","price":25,"label":["汤类","蔬菜"],"stock":2,"createAt":1563957404805}
+{"_id":"jyt","name":"鲫鱼汤","price":22.5,"label":["汤类"],"stock":2,"createAt":1563957404804}
+{"_id":"mdcr","name":"毛豆炒肉","price":12.5,"label":["肉类"],"stock":3,"createAt":1563957404803}
+{"_id":"pg","name":"排骨","price":15,"label":["蔬菜"],"stock":2,"createAt":1563957404806}
+{"_id":"smcr","name":"蒜苗炒肉","price":5,"label":["肉类"],"stock":2,"createAt":1563957404805}
+{"_id":"tdcjk","name":"土豆炒鸡块","price":15,"label":["肉类"],"stock":2,"createAt":1563957404804}
+{"_id":"xbc","name":"小白菜","price":15,"label":["蔬菜"],"stock":2,"createAt":1563957404805}
+{"_id":"zznr","name":"孜然牛肉","price":12.5,"label":["肉类"],"stock":2,"createAt":1563957404804}

@@ -1,17 +1,14 @@
 import jwt from 'jsonwebtoken'
 import fs from 'fs'
 import path from 'path'
+import userDb from '../db/user'
+import {
+  HttpOk,
+  HttpError
+} from './httpHelp'
 
 const publicKey = fs.readFileSync(path.join(__dirname, '../../publicKey.pub'))
 
-// 用户登录的时候返回token
-// let token = jwt.sign({
-//   userInfo: userInfo // 你要保存到token的数据
-// }, publicKey, { expiresIn: '7d' })
-
-/**
- * 检查授权是否合法
- */
 export let CheckAuth = (ctx) => {
   let token = ctx.request.header.authorization
   try {
@@ -39,11 +36,37 @@ export let CheckAuth = (ctx) => {
   }
 }
 
-export let Post = (ctx) => {
-  switch (ctx.params.action) {
-    case 'check':
-      return CheckAuth(ctx).then(result => { ctx.body = result })
-    default:
-      return CheckAuth(ctx).then(result => { ctx.body = result })
+export let Post = async (ctx) => {
+  let {
+    phoneNumber,
+    password
+  } = ctx.request.body
+
+  let user = await userDb.findOne({
+    phoneNumber,
+    password
+  })
+
+  if (!user) {
+    HttpError(ctx, "账号或密码错误")
+    return
   }
+
+  if (!user.isEnable) {
+    HttpError(ctx, "账号已停用")
+    return
+  }
+
+  let token = jwt.sign({
+    userInfo: {
+      name: user.name,
+      userType: user.userType,
+      _id: user._id
+    }
+  }, publicKey, {
+    expiresIn: '7d'
+  })
+
+  HttpOk(ctx, token)
+  return
 }

@@ -3,32 +3,44 @@ export default class BaseDb {
     this.datastore = _datastore
   }
 
-  async find(query) {
-    return await this.datastore.find(query)
+  async find(query, sortField = {
+    createAt: -1
+  }) {
+    return await this.datastore.find(query).sort(sortField)
   }
 
-  async findOne(query) {
-    return await this.datastore.findOne(query)
+  async count(query) {
+    return await this.datastore.count(query)
+  }
+
+  async findOne(doc) {
+    return await this.datastore.findOne(doc)
   }
 
   async insert(doc) {
+    doc.createAt = Date.now()
     return await this.datastore.insert(doc)
   }
 
-  async findPageWithSorted(query, sort = {}, page = 0, perPage = 10) {
+  async findPageWithSorted(query, sort = {}, page = 1, perPage = 10) {
     return await this.datastore.find(query)
       .sort(sort)
       .limit(perPage)
-      .skip(page * perPage)
+      .skip((page - 1) * perPage)
   }
 
-  async updateOption(query, update, options = {
+  async updateOption(query, doc, options = {
     multi: true
   }) {
-    return await this.datastore.update(query, update, options)
+    doc.updateAt = Date.now()
+    return await this.datastore.update(query, {
+      $set: doc
+    }, options)
   }
 
-  async remove(query) {
-    return await this.datastore.remove(query)
+  async remove(doc, option = {
+    multi: true
+  }) {
+    return await this.datastore.remove(doc, option)
   }
 }

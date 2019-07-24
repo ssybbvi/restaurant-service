@@ -19,19 +19,39 @@ export let GetOne = async (ctx) => {
   }
 
   HttpOk(ctx, order)
+  return
 }
 
 export let Get = async (ctx) => {
   let query = ctx.query
   await orderDb.find(query).then((resolve) => {
-    ctx.body = {
-      result: true,
-      data: resolve
-    }
+    HttpOk(ctx, resolve)
+    return
   }).catch(reject => {
-    ctx.body = {
-      result: false,
-      data: reject
+    HttpError(ctx, reject)
+    return
+  })
+}
+
+export let GetPage = async (ctx) => {
+  let {
+    cashierUserId,
+    page,
+    perPage
+  } = ctx.query
+
+  let search = {}
+  if (cashierUserId) {
+    search = {
+      cashierUserId
     }
+  }
+
+  let list = await orderDb.findPageWithSorted(search, "createAt", page, perPage)
+  let total = await orderDb.count(search)
+
+  HttpOk(ctx, {
+    list,
+    total
   })
 }
