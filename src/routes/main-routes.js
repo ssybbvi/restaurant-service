@@ -1,6 +1,9 @@
 import KoaRouter from 'koa-router'
 import controllers from '../controllers/index.js'
-
+import KoaStatic from 'koa-static2'
+import path from 'path'
+import koaSend from 'koa-send'
+import fs from 'fs'
 const router = new KoaRouter()
 
 router
@@ -14,6 +17,7 @@ router
   .put('/api/:name', controllers.api.Put)
   .del('/api/:name', controllers.api.Delect)
   .post('/auth/login', controllers.auth.Post)
+  .get(`/getDirname`, controllers.api.getDirname)
 
   .get('/table', controllers.table.Get)
   .post('/table', controllers.table.Post)
@@ -44,11 +48,6 @@ router
   .delete('/product', controllers.product.Remove)
   .post('/product/setStock', controllers.product.setStock)
 
-  .get('/orderItem', controllers.orderItem.Get)
-  .post('/orderItem', controllers.orderItem.Post)
-  .put('/orderItem', controllers.orderItem.Put)
-  .delete('/orderItem', controllers.orderItem.Remove)
-
   .get('/productType', controllers.productType.Get)
   .post('/productType', controllers.productType.Post)
   .put('/productType', controllers.productType.Put)
@@ -58,18 +57,27 @@ router
   .get('/order/page', controllers.order.GetPage)
   .get('/order/:_id', controllers.order.GetOne)
 
-  .post('/opentable', controllers.restaurant.OpenTable)
-  .post('/paymentOrder', controllers.restaurant.paymentOrder)
-  .put('/orderMake', controllers.restaurant.orderMake)
-  .put('/cancelOrder', controllers.restaurant.cancelOrder)
-
-  .post('/scheduling/initWaitCookQueues', controllers.scheduling.initWaitCookQueues)
-  .post("/scheduling/loadOrderItemToWaitCookQueues", controllers.scheduling.loadOrderItemToWaitCookQueues)
-  .get("/scheduling/fetchWaitCookQueues", controllers.scheduling.fetchWaitCookQueues)
-  .post("/scheduling/startCookOrderItem", controllers.scheduling.startCookOrderItem)
-  .post("/scheduling/finishOrderItem", controllers.scheduling.finishOrderItem)
-  .post("/scheduling/draggableOrderItem", controllers.scheduling.draggableOrderItem)
-  .post("/scheduling/deleteWaitCookQueueChefOrderItem", controllers.scheduling.deleteWaitCookQueueChefOrderItem)
-  .get("/scheduling/fetchCookProductList", controllers.scheduling.fetchCookProductList)
-
+  .post('/restaurant/opentable', controllers.restaurant.openTable)
+  .post('/restaurant/paymentOrder', controllers.restaurant.paymentOrder)
+  .put('/restaurant/orderMake', controllers.restaurant.orderMake)
+  .put('/restaurant/cancelOrder', controllers.restaurant.cancelOrder)
+  .put('/restaurant/setGiftOrderItem', controllers.restaurant.setGiftOrderItem)
+  .put('/restaurant/setTimeOutOrderItem', controllers.restaurant.setTimeOutOrderItem)
+  .put('/restaurant/setExpediteOrderItem', controllers.restaurant.setExpediteOrderItem)
+  .put('/restaurant/setBaleOrderItem', controllers.restaurant.setBaleOrderItem)
+  .put('/restaurant/setRemarkOrderItem', controllers.restaurant.setRemarkOrderItem)
+  .get("/restaurant/fetchWaitCookQueues", controllers.restaurant.fetchWaitCookQueues)
+  .post("/restaurant/startCookOrderItem", controllers.restaurant.startCookOrderItem)
+  .post("/restaurant/finishOrderItem", controllers.restaurant.finishOrderItem)
+  .put("/restaurant/draggableOrderItem", controllers.restaurant.draggableOrderItem)
+  .get("/restaurant/fetchCookProductList", controllers.restaurant.fetchCookProductList)
+  .get('/restaurant/getOrderItem', controllers.restaurant.getOrderItem)
+  .post('/restaurant/insertOrderItem', controllers.restaurant.insertOrderItem)
+  .delete('/restaurant/deleteOrderItem', controllers.restaurant.deleteOrderItem)
+  .put("/restaurant/setOrderItemSort", controllers.restaurant.setOrderItemSort)
+  .get("/restaurant/loadPrepareTransportOrderItem", controllers.restaurant.loadPrepareTransportOrderItem)
+  .get("/restaurant/loadWaiterTransportOrderItem", controllers.restaurant.loadWaiterTransportOrderItem)
+  .put('/restaurant/transportingOrderItem', controllers.restaurant.transportingOrderItem)
+  .put('/restaurant/cancelTransportOrderItem', controllers.restaurant.cancelTransportOrderItem)
+  .put('/restaurant/transportedOrderItem', controllers.restaurant.transportedOrderItem)
 module.exports = router

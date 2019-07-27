@@ -10,9 +10,12 @@ import ErrorRoutesCatch from './middleware/ErrorRoutesCatch'
 import ErrorRoutes from './routes/error-routes'
 import jwt from 'koa-jwt'
 import fs from 'fs'
-import shedulingSocket from './socket/sheduling'
 import http from 'http'
 import socket from 'socket.io'
+import {
+  initWaitCookQueues,
+} from './services/waitCookQueues'
+initWaitCookQueues()
 // import PluginLoader from './lib/PluginLoader'
 
 const app = new Koa2()
@@ -56,10 +59,8 @@ app
 
 if (env === 'development') { // logger
   app.use((ctx, next) => {
-    const start = new Date()
     return next().then(() => {
-      const ms = new Date() - start
-      console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
+      console.log(`${ctx.method} ${ctx.url} -${JSON.stringify(ctx.request.body) }  `)
     })
   })
 }
@@ -67,8 +68,6 @@ if (env === 'development') { // logger
 const server = http.createServer(app.callback());
 const io = socket(server);
 app.context.io = io
-
-shedulingSocket(io);
 
 server.listen(SystemConfig.API_server_port);
 

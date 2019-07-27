@@ -56,8 +56,6 @@ export let setStock = async (ctx) => {
     productIdWithStockList
   } = ctx.request.body
 
-  console.log("productIdWithStockList", productIdWithStockList)
-
   for (let item of productIdWithStockList) {
     await productDb.updateOption({
       _id: item._id

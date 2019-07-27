@@ -1,25 +1,28 @@
 {
-  "name": "koa2-API-scaffold",
+  "name": "resturant-xishuashua",
   "version": "1.0.0",
-  "description": "Koa2 RESTful API 服务器的脚手架",
-  "author": "yi-ge <a@wyr.me>",
+  "description": "xx",
+  "author": "xxxx",
+  "main": "./dist/electron.js",
   "license": "WTFPL",
   "scripts": {
     "start": "gulp nodemon",
     "dev": "gulp",
     "build": "babel src -d dist",
     "production": "node dist/app.js",
-    "test": "jest"
+    "test": "jest",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "dependencies": {
-    "babel-core": "^7.0.0-bridge.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
+    "@babel/runtime": "^7.5.5",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.7.0",
     "koa-body": "^4.1.0",
     "koa-compose": "^4.1.0",
     "koa-jwt": "^3.5.1",
     "koa-router": "^7.4.0",
+    "koa-send": "^5.0.0",
     "koa-static2": "^0.1.8",
     "nedb-promises": "^3.0.6",
     "nodemailer": "^6.1.0",
@@ -28,14 +31,19 @@
     "socket.io": "^2.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.5",
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/node": "^7.5.5",
     "@babel/plugin-external-helpers": "^7.2.0",
     "@babel/plugin-transform-runtime": "^7.4.3",
-    "@babel/preset-env": "^7.4.3",
+    "@babel/preset-env": "^7.5.5",
     "@babel/register": "^7.4.0",
-    "@babel/runtime": "^7.4.3",
     "babel-eslint": "^10.0.1",
-    "babel-jest": "^24.8.0",
+    "babel-jest": "^23.4.2",
+    "babel-loader": "^8.0.0-beta",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "electron": "^5.0.8",
+    "electron-builder": "^21.1.5",
     "eslint": "^5.16.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-friendly-formatter": "^4.0.1",
@@ -49,11 +57,7 @@
     "gulp-eslint": "^5.0.0",
     "gulp-nodemon": "^2.4.2",
     "jest": "^24.7.1",
-    "koa-logger": "^3.2.0",
     "regenerator-runtime": "^0.13.2"
-  },
-  "peerDependencies": {
-    "babel-core": "6.x | ^7.0.0-bridge"
   },
   "engines": {
     "node": ">= 7.8.0",
@@ -61,5 +65,42 @@
   },
   "resolutions": {
     "babel-core": "7.0.0-bridge.0"
+  },
+  "build": {
+    "productName": "electron-restaurant-cash-register",
+    "appId": "com.example.yourapp",
+    "directories": {
+      "output": "build"
+    },
+    "files": [
+      "dist/**",
+      "node_modules/**",
+      "cash-register/**",
+      "chef/**",
+      "publicKey.pub"
+    ],
+    "dmg": {
+      "contents": [{
+          "x": 410,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 150,
+          "type": "file"
+        }
+      ]
+    },
+    "mac": {
+      "icon": "build/icons/icon.icns"
+    },
+    "win": {
+      "icon": "build/icons/icon.ico"
+    },
+    "linux": {
+      "icon": "build/icons"
+    }
   }
 }

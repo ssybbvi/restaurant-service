@@ -8,11 +8,13 @@ if (process.env.npm_config_argv !== undefined && process.env.npm_config_argv.ind
   jsScript = 'node debug'
 }
 
-function lintOne (aims) {
+function lintOne(aims) {
   console.log('ESlint:' + aims)
   console.time('Finished eslint')
   return gulp.src(aims)
-    .pipe(eslint({ configFile: './.eslintrc.js' }))
+    .pipe(eslint({
+      configFile: './.eslintrc.js'
+    }))
     .pipe(eslint.format(friendlyFormatter))
     .pipe(eslint.results(results => {
       // Called once for all ESLint results.
@@ -25,7 +27,9 @@ function lintOne (aims) {
 
 gulp.task('ESlint', () => {
   return gulp.src(['src/**/*.js', '!node_modules/**'])
-    .pipe(eslint({ configFile: './.eslintrc.js' }))
+    .pipe(eslint({
+      configFile: './.eslintrc.js'
+    }))
     .pipe(eslint.format(friendlyFormatter))
     // .pipe(eslint.failAfterError())
     .pipe(eslint.results(results => {
@@ -38,7 +42,7 @@ gulp.task('ESlint', () => {
 
 gulp.task('ESlint_nodemon', gulp.series('ESlint', function () {
   var stream = nodemon({
-    script: 'build/dev-server.js',
+    script: 'lunch/dev-server.js',
     execMap: {
       js: jsScript
     },
@@ -47,7 +51,7 @@ gulp.task('ESlint_nodemon', gulp.series('ESlint', function () {
       return []
     },
     verbose: true,
-    ignore: ['build/*.js', 'dist/*.js', 'nodemon.json', '.git', 'node_modules/**/node_modules', 'gulpfile.js'],
+    ignore: ['lunch/*.js', 'dist/*.js', 'nodemon.json', '.git', 'node_modules/**/node_modules', 'gulpfile.js'],
     env: {
       NODE_ENV: 'development'
     },
@@ -66,12 +70,12 @@ gulp.task('ESlint_nodemon', gulp.series('ESlint', function () {
 
 gulp.task('nodemon', function () {
   return nodemon({
-    script: 'build/dev-server.js',
+    script: 'lunch/dev-server.js',
     execMap: {
       js: jsScript
     },
     verbose: true,
-    ignore: ['build/*.js', 'dist/*.js', 'nodemon.json', '.git', 'node_modules/**/node_modules', 'gulpfile.js'],
+    ignore: ['lunch/*.js', 'dist/*.js', 'nodemon.json', '.git', 'node_modules/**/node_modules', 'gulpfile.js'],
     env: {
       NODE_ENV: 'development'
     },

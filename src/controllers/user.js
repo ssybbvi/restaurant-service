@@ -1,9 +1,20 @@
 import userDb from '../db/user'
-import enumerate from '../db/enumerate'
+import {
+  orderStatus,
+  productStatus,
+  tableStatus,
+  userType
+} from '../services/enumerates'
 import {
   HttpOk,
   HttpError
 } from './httpHelp'
+import {
+  initWaitCookQueues,
+  getWaitCookQueues,
+  setWaitCookQueues,
+  loadOrderItemToWaitCookQueues
+} from '../services/waitCookQueues';
 
 export let Get = async (ctx) => {
   let query = ctx.query
@@ -113,6 +124,22 @@ export let Remove = async (ctx) => {
   })
 }
 
+export let getChefProduct = async (ctx) => {
+  let {
+    userId,
+  } = ctx.query
+
+  let chef = await userDb.findOne({
+    _id: userId,
+    userType: userType.chef
+  })
+  if (!chef) {
+    HttpError(ctx, "没有这个厨师")
+    return
+  }
+  return HttpOk(ctx, chef.extra.likeProductIds || [])
+}
+
 export let setChefProduct = async (ctx) => {
   let {
     userId,
@@ -121,7 +148,7 @@ export let setChefProduct = async (ctx) => {
 
   let chef = await userDb.findOne({
     _id: userId,
-    userType: enumerate.userType.chef
+    userType: userType.chef
   })
   if (!chef) {
     HttpError(ctx, "没有这个厨师")
@@ -136,23 +163,10 @@ export let setChefProduct = async (ctx) => {
     extra: chef.extra
   })
 
+  initWaitCookQueues()
+
+  ctx.io.emit("setChefProduct", {})
   return HttpOk(ctx, {})
-}
-
-export let getChefProduct = async (ctx) => {
-  let {
-    userId,
-  } = ctx.query
-
-  let chef = await userDb.findOne({
-    _id: userId,
-    userType: enumerate.userType.chef
-  })
-  if (!chef) {
-    HttpError(ctx, "没有这个厨师")
-    return
-  }
-  return HttpOk(ctx, chef.extra.likeProductIds || [])
 }
 
 export let chefUpdateWork = async (ctx) => {
@@ -167,5 +181,7 @@ export let chefUpdateWork = async (ctx) => {
     isWork
   })
 
+  initWaitCookQueues()
+  ctx.io.emit("chefUpdateWork", {})
   return HttpOk(ctx, {})
 }

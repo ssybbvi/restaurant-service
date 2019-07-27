@@ -45,6 +45,12 @@ export let Delect = (ctx) => {
   }
 }
 
+export let getDirname = (ctx) => {
+  ctx.body = {
+    path: __dirname
+  }
+}
+
 export let Init = async (ctx) => {
 
   await tableAreaDb.remove({})
@@ -204,6 +210,20 @@ export let Init = async (ctx) => {
     }
   })
 
+  await userDb.insert({
+    _id: "11",
+    name: "送菜员",
+    userType: enumerate.userType.waiter,
+    phoneNumber: "2",
+    password: "",
+    remarks: "",
+    isEnable: true,
+    isWork: true,
+    extra: {
+
+    }
+  })
+
   await orderItemDb.remove({})
 
   await orderItemDb.insert({
@@ -219,6 +239,7 @@ export let Init = async (ctx) => {
     "remark": "12312",
     "status": enumerate.productStatus.waitCooking,
     "createAt": 1563635066759,
+    "tableName": "A101"
   })
 
   await orderItemDb.insert({
@@ -234,6 +255,7 @@ export let Init = async (ctx) => {
     "remark": "水电费水电费广告",
     "status": enumerate.productStatus.waitCooking,
     "createAt": 1563635066759,
+    "tableName": "A101"
   })
 
   await orderItemDb.insert({
@@ -249,7 +271,8 @@ export let Init = async (ctx) => {
     "remark": "哥哥分为五个我个人个人管管",
     "status": enumerate.productStatus.waitCooking,
     "createAt": 1563635068680,
-    "_id": "5kKzW4Jufm2paWlJ"
+    "tableName": "A101"
+
   })
   await orderItemDb.insert({
     "orderId": "GXMPup2oRPQpxQCW",
@@ -264,7 +287,7 @@ export let Init = async (ctx) => {
     "remark": "分身乏术是否违反违法的事实发生的",
     "status": enumerate.productStatus.waitCooking,
     "createAt": 1563635072318,
-    "_id": "1GBdwq3ZrxTtsTqN"
+    "tableName": "A105"
   })
   await orderItemDb.insert({
     "orderId": "GXMPup2oRPQpxQCW",
@@ -279,6 +302,7 @@ export let Init = async (ctx) => {
     "remark": "水电费桑多瓦尔沃尔夫",
     "status": enumerate.productStatus.waitCooking,
     "createAt": 1563635074595,
+    "tableName": "A104"
   })
   await orderItemDb.insert({
     "orderId": "GXMPup2oRPQpxQCW",
@@ -293,6 +317,7 @@ export let Init = async (ctx) => {
     "remark": "法规和维吾尔文范围",
     "status": enumerate.productStatus.waitCooking,
     "createAt": 1563635076781,
+    "tableName": "A103"
   })
 
   await orderItemDb.insert({
@@ -310,7 +335,8 @@ export let Init = async (ctx) => {
     "createAt": 1563635076781,
     "chefId": "1",
     "startCookDateTime": 1563635076781,
-    "endCookDateTime": 1563635076782
+    "endCookDateTime": 1563635076782,
+    "tableName": "A102"
   })
 
   HttpOk(ctx, "")
