@@ -1,10 +1,16 @@
 import productDb from '../db/product'
 import productTypeDb from '../db/productType'
 import userDb from '../db/user'
-import enumerate from '../db/enumerate'
 import orderItemDb from '../db/orderItem'
 import tableDb from '../db/table'
 import tableAreaDb from '../db/tableArea'
+import {
+  orderStatus,
+  productStatus,
+  tableStatus,
+  orderSource,
+  userType
+} from '../services/enumerates'
 
 import {
   HttpOk,
@@ -63,18 +69,21 @@ export let Init = async (ctx) => {
 
   await tableDb.remove({})
   await tableDb.insert({
+    _id: "table1",
     name: "101",
     area: [],
     status: 1,
     defaultSeat: 4
   })
   await tableDb.insert({
+    _id: "table102",
     name: "102",
     area: [],
     status: 1,
     defaultSeat: 4
   })
   await tableDb.insert({
+    _id: "table103",
     name: "103",
     area: [],
     status: 1,
@@ -185,35 +194,35 @@ export let Init = async (ctx) => {
   await userDb.insert({
     _id: "1",
     name: "厨师1",
-    userType: enumerate.userType.chef,
+    userType: [userType.chef],
     phoneNumber: "1",
     password: "",
     remarks: "",
     isEnable: true,
     isWork: true,
     extra: {
-      likeProductIds: ["mdcr", "pg", "jt"]
+      likeProductIds: ["mdcr", "pg", "jt", "xbc"]
     }
   })
 
   await userDb.insert({
     _id: "2",
     name: "厨师2",
-    userType: enumerate.userType.chef,
+    userType: [userType.chef],
     phoneNumber: "2",
     password: "",
     remarks: "",
     isEnable: true,
     isWork: true,
     extra: {
-      likeProductIds: ["xbc", "xbc", "jt"]
+      likeProductIds: ["dbc", "pg", "jt", "mdcr"]
     }
   })
 
   await userDb.insert({
     _id: "11",
     name: "送菜员",
-    userType: enumerate.userType.waiter,
+    userType: [userType.waiter],
     phoneNumber: "2",
     password: "",
     remarks: "",
@@ -226,118 +235,118 @@ export let Init = async (ctx) => {
 
   await orderItemDb.remove({})
 
-  await orderItemDb.insert({
-    "orderId": "GXMPup2oRPQpxQCW",
-    "productId": "jt",
-    "name": "鸡汤",
-    "price": 25,
-    "isGift": false,
-    "isTimeout": false,
-    "isExpedited": false,
-    "isBale": false,
-    "isDelete": false,
-    "remark": "12312",
-    "status": enumerate.productStatus.waitCooking,
-    "createAt": 1563635066759,
-    "tableName": "A101"
-  })
+  // await orderItemDb.insert({
+  //   "orderId": "GXMPup2oRPQpxQCW",
+  //   "productId": "jt",
+  //   "name": "鸡汤",
+  //   "price": 25,
+  //   "isGift": false,
+  //   "isTimeout": false,
+  //   "isExpedited": false,
+  //   "isBale": false,
+  //   "isDelete": false,
+  //   "remark": "12312",
+  //   "status": productStatus.waitCooking,
+  //   "createAt": 1563635066759,
+  //   "tableName": "A101"
+  // })
 
-  await orderItemDb.insert({
-    "orderId": "GXMPup2oRPQpxQCW",
-    "productId": "jt",
-    "name": "鸡汤",
-    "price": 25,
-    "isGift": false,
-    "isTimeout": false,
-    "isExpedited": false,
-    "isBale": false,
-    "isDelete": false,
-    "remark": "水电费水电费广告",
-    "status": enumerate.productStatus.waitCooking,
-    "createAt": 1563635066759,
-    "tableName": "A101"
-  })
+  // await orderItemDb.insert({
+  //   "orderId": "GXMPup2oRPQpxQCW",
+  //   "productId": "jt",
+  //   "name": "鸡汤",
+  //   "price": 25,
+  //   "isGift": false,
+  //   "isTimeout": false,
+  //   "isExpedited": false,
+  //   "isBale": false,
+  //   "isDelete": false,
+  //   "remark": "水电费水电费广告",
+  //   "status": productStatus.waitCooking,
+  //   "createAt": 1563635066759,
+  //   "tableName": "A101"
+  // })
 
-  await orderItemDb.insert({
-    "orderId": "GXMPup2oRPQpxQCW",
-    "productId": "xbc",
-    "name": "小白菜",
-    "price": 15,
-    "isGift": false,
-    "isTimeout": false,
-    "isExpedited": false,
-    "isBale": false,
-    "isDelete": false,
-    "remark": "哥哥分为五个我个人个人管管",
-    "status": enumerate.productStatus.waitCooking,
-    "createAt": 1563635068680,
-    "tableName": "A101"
+  // await orderItemDb.insert({
+  //   "orderId": "GXMPup2oRPQpxQCW",
+  //   "productId": "xbc",
+  //   "name": "小白菜",
+  //   "price": 15,
+  //   "isGift": false,
+  //   "isTimeout": false,
+  //   "isExpedited": false,
+  //   "isBale": false,
+  //   "isDelete": false,
+  //   "remark": "哥哥分为五个我个人个人管管",
+  //   "status": productStatus.waitCooking,
+  //   "createAt": 1563635068680,
+  //   "tableName": "A101"
 
-  })
-  await orderItemDb.insert({
-    "orderId": "GXMPup2oRPQpxQCW",
-    "productId": "pg",
-    "name": "排骨",
-    "price": 15,
-    "isGift": false,
-    "isTimeout": false,
-    "isExpedited": false,
-    "isBale": false,
-    "isDelete": false,
-    "remark": "分身乏术是否违反违法的事实发生的",
-    "status": enumerate.productStatus.waitCooking,
-    "createAt": 1563635072318,
-    "tableName": "A105"
-  })
-  await orderItemDb.insert({
-    "orderId": "GXMPup2oRPQpxQCW",
-    "productId": "smcr",
-    "name": "蒜苗炒肉",
-    "price": 5,
-    "isGift": false,
-    "isTimeout": false,
-    "isExpedited": false,
-    "isBale": false,
-    "isDelete": false,
-    "remark": "水电费桑多瓦尔沃尔夫",
-    "status": enumerate.productStatus.waitCooking,
-    "createAt": 1563635074595,
-    "tableName": "A104"
-  })
-  await orderItemDb.insert({
-    "orderId": "GXMPup2oRPQpxQCW",
-    "productId": "jyt",
-    "name": "鲫鱼汤",
-    "price": 22.5,
-    "isGift": false,
-    "isTimeout": false,
-    "isExpedited": false,
-    "isBale": false,
-    "isDelete": false,
-    "remark": "法规和维吾尔文范围",
-    "status": enumerate.productStatus.waitCooking,
-    "createAt": 1563635076781,
-    "tableName": "A103"
-  })
+  // })
+  // await orderItemDb.insert({
+  //   "orderId": "GXMPup2oRPQpxQCW",
+  //   "productId": "pg",
+  //   "name": "排骨",
+  //   "price": 15,
+  //   "isGift": false,
+  //   "isTimeout": false,
+  //   "isExpedited": false,
+  //   "isBale": false,
+  //   "isDelete": false,
+  //   "remark": "分身乏术是否违反违法的事实发生的",
+  //   "status": productStatus.waitCooking,
+  //   "createAt": 1563635072318,
+  //   "tableName": "A105"
+  // })
+  // await orderItemDb.insert({
+  //   "orderId": "GXMPup2oRPQpxQCW",
+  //   "productId": "smcr",
+  //   "name": "蒜苗炒肉",
+  //   "price": 5,
+  //   "isGift": false,
+  //   "isTimeout": false,
+  //   "isExpedited": false,
+  //   "isBale": false,
+  //   "isDelete": false,
+  //   "remark": "水电费桑多瓦尔沃尔夫",
+  //   "status": productStatus.waitCooking,
+  //   "createAt": 1563635074595,
+  //   "tableName": "A104"
+  // })
+  // await orderItemDb.insert({
+  //   "orderId": "GXMPup2oRPQpxQCW",
+  //   "productId": "jyt",
+  //   "name": "鲫鱼汤",
+  //   "price": 22.5,
+  //   "isGift": false,
+  //   "isTimeout": false,
+  //   "isExpedited": false,
+  //   "isBale": false,
+  //   "isDelete": false,
+  //   "remark": "法规和维吾尔文范围",
+  //   "status": productStatus.waitCooking,
+  //   "createAt": 1563635076781,
+  //   "tableName": "A103"
+  // })
 
-  await orderItemDb.insert({
-    "orderId": "GXMPup2oRPQpxQCW",
-    "productId": "jyt",
-    "name": "鲫鱼汤",
-    "price": 22.5,
-    "isGift": false,
-    "isTimeout": false,
-    "isExpedited": false,
-    "isBale": false,
-    "isDelete": false,
-    "remark": "水电费示范区而微软沃尔沃",
-    "status": enumerate.productStatus.finish,
-    "createAt": 1563635076781,
-    "chefId": "1",
-    "startCookDateTime": 1563635076781,
-    "endCookDateTime": 1563635076782,
-    "tableName": "A102"
-  })
+  // await orderItemDb.insert({
+  //   "orderId": "GXMPup2oRPQpxQCW",
+  //   "productId": "jyt",
+  //   "name": "鲫鱼汤",
+  //   "price": 22.5,
+  //   "isGift": false,
+  //   "isTimeout": false,
+  //   "isExpedited": false,
+  //   "isBale": false,
+  //   "isDelete": false,
+  //   "remark": "水电费示范区而微软沃尔沃",
+  //   "status": productStatus.finish,
+  //   "createAt": 1563635076781,
+  //   "chefId": "1",
+  //   "startCookDateTime": 1563635076781,
+  //   "endCookDateTime": 1563635076782,
+  //   "tableName": "A102"
+  // })
 
   HttpOk(ctx, "")
 }

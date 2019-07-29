@@ -26,3 +26,7 @@ export let userType = {
   chef: 2,
   waiter: 3
 }
+
+export let orderSource = {
+  cashRegister: 1
+}

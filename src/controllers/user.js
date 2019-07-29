@@ -11,9 +11,6 @@ import {
 } from './httpHelp'
 import {
   initWaitCookQueues,
-  getWaitCookQueues,
-  setWaitCookQueues,
-  loadOrderItemToWaitCookQueues
 } from '../services/waitCookQueues';
 
 export let Get = async (ctx) => {

@@ -88,8 +88,12 @@ export let Put = async (ctx) => {
 }
 
 export let Remove = async (ctx) => {
-  let body = ctx.request.body
-  await remarkDb.remove(body).then((resolve) => {
+  let {
+    _id
+  } = ctx.query
+  await remarkDb.remove({
+    _id
+  }).then((resolve) => {
     HttpOk(ctx, resolve)
     return
   }).catch(reject => {

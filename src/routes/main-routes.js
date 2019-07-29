@@ -58,6 +58,8 @@ router
   .get('/order/:_id', controllers.order.GetOne)
 
   .post('/restaurant/opentable', controllers.restaurant.openTable)
+  .put('/restaurant/changeSeat', controllers.restaurant.changeSeat)
+  .put('/restaurant/changeTable', controllers.restaurant.changeTable)
   .post('/restaurant/paymentOrder', controllers.restaurant.paymentOrder)
   .put('/restaurant/orderMake', controllers.restaurant.orderMake)
   .put('/restaurant/cancelOrder', controllers.restaurant.cancelOrder)
@@ -80,4 +82,6 @@ router
   .put('/restaurant/transportingOrderItem', controllers.restaurant.transportingOrderItem)
   .put('/restaurant/cancelTransportOrderItem', controllers.restaurant.cancelTransportOrderItem)
   .put('/restaurant/transportedOrderItem', controllers.restaurant.transportedOrderItem)
+  .put('/restaurant/cancelOrder', controllers.restaurant.cancelOrder)
+
 module.exports = router

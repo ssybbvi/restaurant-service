@@ -6,20 +6,26 @@ import tableDb from '../db/table'
 import {
   orderStatus,
   productStatus,
-  tableStatus
+  tableStatus,
+  orderSource
 } from '../services/enumerates'
 import {
   HttpOk,
   HttpError
 } from './httpHelp'
 import {
-  initWaitCookQueues,
   getWaitCookQueues,
-  setWaitCookQueues,
-  loadOrderItemToWaitCookQueues
+  loadOrderItemToWaitCookQueues,
+  settingGift,
+  settingTimeOut,
+  settingBale,
+  settingDelete,
+  draggableItem,
+  settingCancelExpedite,
+  settingExpedite,
+  updateOrderItemTableName
 } from '../services/waitCookQueues';
 
-//下单中
 export let openTable = async (ctx) => {
   let {
     tableId,
@@ -35,6 +41,9 @@ export let openTable = async (ctx) => {
   }
 
   let order = await orderDb.insert({
+    tableId: tableId,
+    orderSource: orderSource.cashRegister,
+    seat: seat,
     tableName: table.name,
     tableAreaName: table.area.length > 0 ? table.area[0] : "",
     status: orderStatus.processing,
@@ -56,6 +65,119 @@ export let openTable = async (ctx) => {
   ctx.io.emit("openTable", {})
   HttpOk(ctx, order)
   return
+}
+
+export let changeSeat = async (ctx) => {
+  let {
+    orderId,
+    seat
+  } = ctx.request.body
+
+  let order = await orderDb.findOne({
+    _id: orderId
+  })
+  if (!order) {
+    HttpError(ctx, "订单不存在")
+    return
+  }
+
+  let table = await tableDb.findOne({
+    _id: order.tableId
+  })
+  if (!table) {
+    HttpError(ctx, "桌子不存在")
+    return
+  }
+
+  await tableDb.updateOption({
+    _id: order.tableId
+  }, {
+    seat: seat
+  })
+
+  await orderDb.updateOption({
+    _id: orderId
+  }, {
+    seat: seat
+  })
+
+  ctx.io.emit(`orderId:${orderId}`, {})
+  ctx.io.emit(`changeSet`, {})
+  HttpOk(ctx, {})
+  return
+}
+
+export let changeTable = async (ctx) => {
+  let {
+    orderId,
+    tableId
+  } = ctx.request.body
+
+  let order = await orderDb.findOne({
+    _id: orderId
+  })
+  if (!order) {
+    HttpError(ctx, "订单不存在")
+    return
+  }
+
+  let newTable = await tableDb.findOne({
+    _id: tableId
+  })
+  if (!newTable) {
+    HttpError(ctx, "桌子不存在")
+    return
+  }
+
+  if (newTable.status !== tableStatus.available) {
+    HttpError(ctx, "目标桌子不是可用状态")
+    return
+  }
+
+  let oldTable = await tableDb.findOne({
+    _id: order.tableId
+  })
+  if (!oldTable) {
+    HttpError(ctx, "原桌子不存在")
+    return
+  }
+
+  await tableDb.updateOption({
+    _id: oldTable._id
+  }, {
+    status: tableStatus.available,
+    orderId: "",
+    startDateTime: 0
+  })
+
+  await tableDb.updateOption({
+    _id: newTable._id
+  }, {
+    orderId: order._id,
+    status: tableStatus.dining,
+    startDateTime: oldTable.startDateTime,
+    seat: oldTable.seat,
+  })
+
+  await orderDb.updateOption({
+    _id: order._id
+  }, {
+    tableId: newTable._id,
+    tableAreaName: newTable.area,
+    tableName: newTable.name
+  })
+
+  await orderItemDb.updateOption({
+    orderId: order._id
+  }, {
+    tableName: newTable.name
+  })
+
+  await updateOrderItemTableName(order._id, newTable.name)
+
+  ctx.io.emit(`orderId:${orderId}`, {})
+  ctx.io.emit(`changeTable`, {})
+  HttpOk(ctx, {})
 }
 
 export let getOrderItem = async (ctx) => {
@@ -141,13 +263,23 @@ export let setGiftOrderItem = async (ctx) => {
     return
   }
 
+  let isGift = !orderItem.isGift
+  if (orderItem.status === productStatus.waitCooking) {
+    await settingGift(orderItemId, isGift)
+  }
+
   await orderItemDb.updateOption({
     _id: orderItemId
   }, {
-    isGift: !orderItem.isGift
+    isGift: isGift
+  })
+
+  let lastOrderItem = await orderItemDb.findOne({
+    _id: orderItemId
   })
 
   ctx.io.emit(`orderId:${orderItem.orderId}`, {})
+  ctx.io.emit(`setGiftOrderItem`, lastOrderItem)
   HttpOk(ctx, {})
   return
 }
@@ -182,13 +314,23 @@ export let setTimeOutOrderItem = async (ctx) => {
     return
   }
 
+  let isTimeout = !orderItem.isTimeout
+  if (orderItem.status === productStatus.waitCooking) {
+    await settingTimeOut(orderItemId, isTimeout)
+  }
+
   await orderItemDb.updateOption({
     _id: orderItemId
   }, {
     isTimeout: !orderItem.isTimeout
   })
 
+  let lastOrderItem = await orderItemDb.findOne({
+    _id: orderItemId
+  })
+
   ctx.io.emit(`orderId:${orderItem.orderId}`, {})
+  ctx.io.emit(`setTimeOutOrderItem`, lastOrderItem)
   HttpOk(ctx, {})
 }
 
@@ -221,14 +363,27 @@ export let setExpediteOrderItem = async (ctx) => {
     HttpError(ctx, "主订单必须是处理中才可以修改状态")
     return
   }
+  let isExpedited = !orderItem.isExpedited
+  if (orderItem.status === productStatus.waitCooking) {
+    await settingDelete(orderItemId) //先删除
+    if (isExpedited) { //再按加急排序插入
+      await settingExpedite(orderItem)
+    } else { //按下单时间排序插入
+      await settingCancelExpedite(orderItem)
+    }
+  }
 
   await orderItemDb.updateOption({
     _id: orderItemId
   }, {
-    isExpedited: !orderItem.isExpedited
+    isExpedited: isExpedited
   })
 
-  ctx.io.emit(`expediteOrderItem`, {})
+  let lastOrderItem = await orderItemDb.findOne({
+    _id: orderItemId
+  })
+
+  ctx.io.emit(`expediteOrderItem`, lastOrderItem)
   ctx.io.emit(`orderId:${orderItem.orderId}`, {})
 
   HttpOk(ctx, {})
@@ -259,12 +414,22 @@ export let setBaleOrderItem = async (ctx) => {
     return
   }
 
+  let isBale = !orderItem.isBale
+  if (orderItem.status === productStatus.waitCooking) {
+    await settingBale(orderItemId, isBale)
+  }
+
   await orderItemDb.updateOption({
     _id: orderItemId
   }, {
-    isBale: !orderItem.isBale
+    isBale: isBale
   })
 
+  let lastOrderItem = await orderItemDb.findOne({
+    _id: orderItemId
+  })
+
+  ctx.io.emit(`setBaleOrderItem`, lastOrderItem)
   ctx.io.emit(`orderId:${orderItem.orderId}`, {})
   HttpOk(ctx, {})
 }
@@ -338,15 +503,7 @@ export let deleteOrderItem = async (ctx) => {
   }
 
   if ([productStatus.waitCooking].some(s => s === orderItem.status)) {
-    let waitCookQueues = getWaitCookQueues()
-    for (let item of waitCookQueues.chefList) {
-      let index = item.list.findIndex(f => f._id === orderItemId)
-      if (index > -1) {
-        item.list.splice(index, 1)
-        break
-      }
-    }
-    setWaitCookQueues(waitCookQueues)
+    await settingDelete(orderItemId)
   }
 
   await orderItemDb.remove({
@@ -398,21 +555,26 @@ export let orderMake = async (ctx) => {
   }
 
   let orderItems = await orderItemDb.find({
-    orderId: orderId
+    orderId: orderId,
+    isTimeout: false,
+    status: productStatus.normal
   })
-  for (let index = 0; index < orderItems.length; index++) {
-    const item = orderItems[index];
-    if (item.status === productStatus.normal && item.isTimeout === false) {
-      await orderItemDb.updateOption({
-        _id: item._id,
-      }, {
-        status: productStatus.waitCooking,
-        orderMakeDateTime: Date.now()
-      })
-    }
+
+  orderItems.sort((pre, cur) => {
+    return pre.isExpedited ? 1 : -1
+  })
+
+  for (let item of orderItems) {
+    await orderItemDb.updateOption({
+      _id: item._id,
+    }, {
+      status: productStatus.waitCooking,
+      orderMakeDateTime: Date.now()
+    })
   }
 
   await loadOrderItemToWaitCookQueues()
+
   ctx.io.emit(`orderId:${orderId}`, {})
   ctx.io.emit("orderMake", {})
   HttpOk(ctx, {})
@@ -434,15 +596,7 @@ export let draggableOrderItem = async (ctx) => {
     return
   }
 
-  let waitCookQueues = getWaitCookQueues()
-
-  let fromChef = waitCookQueues.chefList.find(f => f._id === fromChefId)
-  fromChef.list.splice(oldIndex, 1)
-
-  let toChef = waitCookQueues.chefList.find(f => f._id === toChefId)
-  toChef.list.splice(newIndex, 0, orderItem)
-
-  setWaitCookQueues(waitCookQueues)
+  await draggableItem(fromChefId, toChefId, oldIndex, newIndex, orderItem)
 
   ctx.io.emit("draggableOrderItem", {})
   HttpOk(ctx, {})
@@ -498,9 +652,7 @@ export let startCookOrderItem = async (ctx) => {
     chefId: userId
   })
 
-  chef.list.splice(orderItemIndex, 1)
-
-  setWaitCookQueues(waitCookQueues)
+  await settingDelete(orderItemId)
 
   ctx.io.emit("startCookOrderItem", orderItem)
   ctx.io.emit(`orderId:${orderItem.orderId}`, {})
@@ -763,6 +915,7 @@ export let paymentOrder = async (ctx) => {
     status: tableStatus.available,
   })
 
+  ctx.io.emit("paymentOrder", {})
   HttpOk(ctx, {})
   return
 }
@@ -781,14 +934,10 @@ export let cancelOrder = async (ctx) => {
   }
 
   let orderItems = await orderItemDb.find({
-    $or: [{
-      status: productStatus.finish
-    }, {
-      status: productStatus.cooking
-    }]
+    orderId: orderId
   })
 
-  if (orderItems) {
+  if (!orderItems.every(s => s.status === productStatus.normal)) {
     HttpError(ctx, "已有菜品下单到厨房了，无法取消")
     return
   }
@@ -803,8 +952,10 @@ export let cancelOrder = async (ctx) => {
     orderId: orderId
   }, {
     status: tableStatus.available,
+    orderId: ""
   })
 
+  ctx.io.emit("cancelOrder", {})
   HttpOk(ctx, {})
   return
 }

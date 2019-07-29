@@ -1,10 +1,15 @@
 import tableDb from '../db/table'
-import enumerate from '../db/enumerate'
 import {
   HttpOk,
   HttpError
 } from './httpHelp'
 
+import {
+  orderStatus,
+  productStatus,
+  tableStatus,
+  orderSource
+} from '../services/enumerates'
 export let Get = async (ctx) => {
   let query = ctx.query
 
@@ -33,7 +38,7 @@ export let Post = async (ctx) => {
     return
   }
 
-  let status = enumerate.tableStatus.available
+  let status = tableStatus.available
 
   let existName = await tableDb.findOne({
     name: name
