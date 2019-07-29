@@ -629,10 +629,12 @@ export let startCookOrderItem = async (ctx) => {
       HttpError(ctx, "没有这道菜")
       return
     }
+  } else {
+    orderItemId = chef.list[orderItemIndex]._id
   }
 
   let orderItem = await orderItemDb.findOne({
-    _id: chef.list[orderItemIndex]._id
+    _id: orderItemId
   })
   if (!orderItem) {
     HttpError(ctx, "这道菜被删除了")
@@ -901,7 +903,7 @@ export let paymentOrder = async (ctx) => {
     _id: order._id
   }, {
     paymentPrice: paymentPrice,
-    endDateTime: Date.now(),
+    paymentDateTime: Date.now(),
     remark: remark,
     status: orderStatus.finish,
     totalPrice: totalPrice,

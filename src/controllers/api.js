@@ -2,6 +2,7 @@ import productDb from '../db/product'
 import productTypeDb from '../db/productType'
 import userDb from '../db/user'
 import orderItemDb from '../db/orderItem'
+import orderDb from '../db/order'
 import tableDb from '../db/table'
 import tableAreaDb from '../db/tableArea'
 import {
@@ -58,6 +59,8 @@ export let getDirname = (ctx) => {
 }
 
 export let Init = async (ctx) => {
+
+  await orderDb.remove({})
 
   await tableAreaDb.remove({})
   await tableAreaDb.insert({

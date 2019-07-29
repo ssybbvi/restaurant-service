@@ -47,7 +47,9 @@ export let GetPage = async (ctx) => {
     }
   }
 
-  let list = await orderDb.findPageWithSorted(search, "createAt", page, perPage)
+  let list = await orderDb.findPageWithSorted(search, {
+    createAt: 1
+  }, page, perPage)
   let total = await orderDb.count(search)
 
   HttpOk(ctx, {
