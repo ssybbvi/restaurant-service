@@ -11,7 +11,8 @@ router
     ctx.body = '禁止访问！'
   }) // 以/public开头则不用经过权限认证
   .all('/upload', controllers.upload.default)
-  .post('/api/init', controllers.api.Init)
+  .get('/api/testSocket', controllers.api.testSocket)
+  .get('/api/init', controllers.api.Init)
   .get('/api/:name', controllers.api.Get)
   .post('/api/:name', controllers.api.Post)
   .put('/api/:name', controllers.api.Put)

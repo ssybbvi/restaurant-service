@@ -44,6 +44,7 @@ export let openTable = async (ctx) => {
     tableId: tableId,
     orderSource: orderSource.cashRegister,
     seat: seat,
+    seatPrice: 2,
     tableName: table.name,
     tableAreaName: table.area.length > 0 ? table.area[0] : "",
     status: orderStatus.processing,
@@ -888,7 +889,10 @@ export let paymentOrder = async (ctx) => {
     totalPrice,
     remark,
     cashierName,
-    cashierUserId
+    cashierUserId,
+    offerList,
+    totalOfferPrice,
+    paymentType
   } = ctx.request.body
 
   let order = await orderDb.findOne({
@@ -908,7 +912,10 @@ export let paymentOrder = async (ctx) => {
     status: orderStatus.finish,
     totalPrice: totalPrice,
     cashierName,
-    cashierUserId
+    cashierUserId,
+    offerList: offerList,
+    totalOfferPrice,
+    paymentType
   })
 
   await tableDb.updateOption({

@@ -12,12 +12,22 @@ import {
   orderSource,
   userType
 } from '../services/enumerates'
+import {
+  initWaitCookQueues,
+} from '../services/waitCookQueues'
 
 import {
   HttpOk,
   HttpError
 } from './httpHelp'
 import product from '../db/product';
+
+export let testSocket = (ctx) => {
+  ctx.io.emit("testSocket", {
+    test: 123
+  })
+  return HttpOk(ctx, {})
+}
 
 export let Get = (ctx) => {
 
@@ -351,5 +361,6 @@ export let Init = async (ctx) => {
   //   "tableName": "A102"
   // })
 
+  initWaitCookQueues()
   HttpOk(ctx, "")
 }
