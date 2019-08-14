@@ -30,7 +30,8 @@ export let Post = async (ctx) => {
   }
 
   let existContent = await remarkDb.findOne({
-    content
+    content,
+    type
   })
   if (existContent) {
     HttpError(ctx, "已有相同")

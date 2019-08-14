@@ -22,50 +22,12 @@ import {
 } from './httpHelp'
 import product from '../db/product';
 
-export let testSocket = (ctx) => {
-  ctx.io.emit("testSocket", {
-    test: 123
-  })
-  return HttpOk(ctx, {})
-}
+let gitlabList = []
 
-export let Get = (ctx) => {
-
-  ctx.body = {
-    result: 'get',
-    name: "ctx.params.name",
-    para: ctx.query
-  }
-}
-
-export let Post = async (ctx) => {
-  ctx.body = {
-    result: 'post',
-    name: ctx.params.name,
-    para: ctx.request.body
-  }
-}
-
-export let Put = (ctx) => {
-  ctx.body = {
-    result: 'put',
-    name: ctx.params.name,
-    para: ctx.request.body
-  }
-}
-
-export let Delect = (ctx) => {
-  ctx.body = {
-    result: 'delect',
-    name: ctx.params.name,
-    para: ctx.request.body
-  }
-}
-
-export let getDirname = (ctx) => {
-  ctx.body = {
-    path: __dirname
-  }
+export let gitlab = (ctx) => {
+  let body = ctx.request.body
+  gitlabList.push(body)
+  ctx.body = gitlabList
 }
 
 export let Init = async (ctx) => {

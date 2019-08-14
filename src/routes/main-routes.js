@@ -11,14 +11,9 @@ router
     ctx.body = '禁止访问！'
   }) // 以/public开头则不用经过权限认证
   .all('/upload', controllers.upload.default)
-  .get('/api/testSocket', controllers.api.testSocket)
+  .post('/api/gitlab', controllers.api.gitlab)
   .get('/api/init', controllers.api.Init)
-  .get('/api/:name', controllers.api.Get)
-  .post('/api/:name', controllers.api.Post)
-  .put('/api/:name', controllers.api.Put)
-  .del('/api/:name', controllers.api.Delect)
   .post('/auth/login', controllers.auth.Post)
-  .get(`/getDirname`, controllers.api.getDirname)
 
   .get('/table', controllers.table.Get)
   .post('/table', controllers.table.Post)
@@ -54,6 +49,9 @@ router
   .put('/productType', controllers.productType.Put)
   .delete('/productType', controllers.productType.Remove)
 
+  .get('/configs', controllers.configs.Get)
+  .put('/configs', controllers.configs.Put)
+
   .get('/order', controllers.order.Get)
   .get('/order/page', controllers.order.GetPage)
   .get('/order/:_id', controllers.order.GetOne)
@@ -69,6 +67,7 @@ router
   .put('/restaurant/setExpediteOrderItem', controllers.restaurant.setExpediteOrderItem)
   .put('/restaurant/setBaleOrderItem', controllers.restaurant.setBaleOrderItem)
   .put('/restaurant/setRemarkOrderItem', controllers.restaurant.setRemarkOrderItem)
+  .put('/restaurant/setOrderReamrk', controllers.restaurant.setOrderReamrk)
   .get("/restaurant/fetchWaitCookQueues", controllers.restaurant.fetchWaitCookQueues)
   .post("/restaurant/startCookOrderItem", controllers.restaurant.startCookOrderItem)
   .post("/restaurant/finishOrderItem", controllers.restaurant.finishOrderItem)
@@ -84,5 +83,6 @@ router
   .put('/restaurant/cancelTransportOrderItem', controllers.restaurant.cancelTransportOrderItem)
   .put('/restaurant/transportedOrderItem', controllers.restaurant.transportedOrderItem)
   .put('/restaurant/cancelOrder', controllers.restaurant.cancelOrder)
+  .put('/restaurant/updatePayment', controllers.restaurant.updatePayment)
 
 module.exports = router

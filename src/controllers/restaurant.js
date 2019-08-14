@@ -2,6 +2,7 @@ import tableAreaDb from '../db/tableArea'
 import orderItemDb from '../db/orderItem'
 import orderDb from '../db/order'
 import tableDb from '../db/table'
+import userDb from '../db/user'
 
 import {
   orderStatus,
@@ -26,6 +27,7 @@ import {
   updateOrderItemTableName
 } from '../services/waitCookQueues';
 
+//开桌
 export let openTable = async (ctx) => {
   let {
     tableId,
@@ -50,7 +52,7 @@ export let openTable = async (ctx) => {
     status: orderStatus.processing,
     totalPrice: 0,
     paymentPrice: 0,
-    offerPriceItems: [],
+    offerList: [],
     eventItems: []
   })
 
@@ -63,11 +65,14 @@ export let openTable = async (ctx) => {
     orderId: order._id
   })
 
+  await saveEventItems(order._id, `开桌 桌号:${table.name} 座位数:${seat}`)
+
   ctx.io.emit("openTable", {})
   HttpOk(ctx, order)
   return
 }
 
+//修改座位数
 export let changeSeat = async (ctx) => {
   let {
     orderId,
@@ -102,12 +107,15 @@ export let changeSeat = async (ctx) => {
     seat: seat
   })
 
+  await saveEventItems(order._id, `修改座位数量${seat}`)
+
   ctx.io.emit(`orderId:${orderId}`, {})
   ctx.io.emit(`changeSet`, {})
   HttpOk(ctx, {})
   return
 }
 
+//换桌
 export let changeTable = async (ctx) => {
   let {
     orderId,
@@ -176,11 +184,14 @@ export let changeTable = async (ctx) => {
 
   await updateOrderItemTableName(order._id, newTable.name)
 
+  await saveEventItems(order._id, `换桌  新桌号:${newTable.name} `)
+
   ctx.io.emit(`orderId:${orderId}`, {})
   ctx.io.emit(`changeTable`, {})
   HttpOk(ctx, {})
 }
 
+//获得订单列表
 export let getOrderItem = async (ctx) => {
   let {
     orderId
@@ -199,6 +210,7 @@ export let getOrderItem = async (ctx) => {
   return
 }
 
+//新增菜品
 export let insertOrderItem = async (ctx) => {
   let {
     orderId,
@@ -234,11 +246,14 @@ export let insertOrderItem = async (ctx) => {
     tableName: order.tableName
   })
 
+  await saveEventItems(order._id, `新增菜品 菜品名:${name}`)
+
   ctx.io.emit(`orderId:${orderId}`, {})
   HttpOk(ctx, {})
   return
 }
 
+//设置菜品为赠品
 export let setGiftOrderItem = async (ctx) => {
   let {
     orderItemId
@@ -279,12 +294,15 @@ export let setGiftOrderItem = async (ctx) => {
     _id: orderItemId
   })
 
+  await saveEventItems(order._id, `${isGift?'设置':'取消'}菜品为赠品 菜品名:${orderItem.name}`)
+
   ctx.io.emit(`orderId:${orderItem.orderId}`, {})
   ctx.io.emit(`setGiftOrderItem`, lastOrderItem)
   HttpOk(ctx, {})
   return
 }
 
+//设置菜品暂停
 export let setTimeOutOrderItem = async (ctx) => {
   let {
     orderItemId
@@ -330,11 +348,14 @@ export let setTimeOutOrderItem = async (ctx) => {
     _id: orderItemId
   })
 
+  await saveEventItems(order._id, `${isTimeout?'设置':'取消'}暂停菜品 菜品名:${orderItem.name}`)
+
   ctx.io.emit(`orderId:${orderItem.orderId}`, {})
   ctx.io.emit(`setTimeOutOrderItem`, lastOrderItem)
   HttpOk(ctx, {})
 }
 
+//设置加急菜品
 export let setExpediteOrderItem = async (ctx) => {
   let {
     orderItemId
@@ -384,12 +405,15 @@ export let setExpediteOrderItem = async (ctx) => {
     _id: orderItemId
   })
 
+  await saveEventItems(order._id, `${isExpedited?'设置':'取消'}加急菜品 菜品名:${orderItem.name}`)
+
   ctx.io.emit(`expediteOrderItem`, lastOrderItem)
   ctx.io.emit(`orderId:${orderItem.orderId}`, {})
 
   HttpOk(ctx, {})
 }
 
+//设置菜品为打包
 export let setBaleOrderItem = async (ctx) => {
   let {
     orderItemId
@@ -430,11 +454,42 @@ export let setBaleOrderItem = async (ctx) => {
     _id: orderItemId
   })
 
+  await saveEventItems(order._id, `${isBale?'设置':'取消'}打包菜品 菜品名:${orderItem.name}`)
+
   ctx.io.emit(`setBaleOrderItem`, lastOrderItem)
   ctx.io.emit(`orderId:${orderItem.orderId}`, {})
   HttpOk(ctx, {})
 }
 
+//设置订单备注
+export let setOrderReamrk = async (ctx) => {
+  let {
+    orderId,
+    remark
+  } = ctx.request.body
+
+  let order = await orderDb.findOne({
+    _id: orderId
+  })
+  if (!order) {
+    HttpError(ctx, "主订单不存在")
+    return
+  }
+
+  await orderDb.updateOption({
+    _id: orderId
+  }, {
+    remark: remark
+  })
+
+  await saveEventItems(order._id, `设置订单备注:${remark}`)
+
+  ctx.io.emit(`setOrderReamrk`, {})
+  ctx.io.emit(`orderId:${orderId}`, {})
+  HttpOk(ctx, {})
+}
+
+//设置菜品备注
 export let setRemarkOrderItem = async (ctx) => {
   let {
     orderItemId,
@@ -467,12 +522,15 @@ export let setRemarkOrderItem = async (ctx) => {
     remark: remark
   })
 
+  await saveEventItems(order._id, `设置菜品备注 菜品名:${orderItem.name}  备注:${remark}`)
+
   ctx.io.emit(`setRemarkOrderItem`, {})
   ctx.io.emit(`orderId:${orderItem.orderId}`, {})
   HttpOk(ctx, {})
   return
 }
 
+//删除菜品
 export let deleteOrderItem = async (ctx) => {
   let {
     orderItemId,
@@ -517,12 +575,15 @@ export let deleteOrderItem = async (ctx) => {
     eventItems: [deleteReamrk || ""]
   })
 
+  await saveEventItems(order._id, `删除菜品 菜品名:${orderItem.name}，删除原因:${deleteReamrk}`)
+
   ctx.io.emit(`deleteOrderItem`, orderItem)
   ctx.io.emit(`orderId:${orderItem.orderId}`, {})
   HttpOk(ctx, {})
   return
 }
 
+//设置菜品顺序
 export let setOrderItemSort = async (ctx) => {
   let {
     orderItemIds,
@@ -537,11 +598,14 @@ export let setOrderItemSort = async (ctx) => {
     })
   }
 
+  await saveEventItems(orderId, `调整菜品顺序`)
+
   ctx.io.emit(`orderId:${orderId}`, {})
   HttpOk(ctx, {})
   return
 }
 
+//下单到厨房
 export let orderMake = async (ctx) => {
   let {
     orderId
@@ -575,6 +639,8 @@ export let orderMake = async (ctx) => {
   }
 
   await loadOrderItemToWaitCookQueues()
+
+  await saveEventItems(orderId, `下单到厨房`)
 
   ctx.io.emit(`orderId:${orderId}`, {})
   ctx.io.emit("orderMake", {})
@@ -652,10 +718,13 @@ export let startCookOrderItem = async (ctx) => {
   }, {
     status: productStatus.cooking,
     startCookDateTime: Date.now(),
-    chefId: userId
+    chefId: userId,
+    chefName: chef.name
   })
 
   await settingDelete(orderItemId)
+
+  await saveEventItems(orderItem.orderId, `${chef.name}开始烹饪菜品${orderItem.name}`)
 
   ctx.io.emit("startCookOrderItem", orderItem)
   ctx.io.emit(`orderId:${orderItem.orderId}`, {})
@@ -687,6 +756,8 @@ export let finishOrderItem = async (ctx) => {
     status: productStatus.finish,
     endCookDateTime: Date.now()
   })
+
+  await saveEventItems(orderItem.orderId, `${orderItem.chefName}完成烹饪菜品${orderItem.name}`)
 
   ctx.io.emit(`finishOrderItem`, {})
   ctx.io.emit(`orderId:${orderItem.orderId}`, {})
@@ -723,6 +794,7 @@ export let fetchCookProductList = async (ctx) => {
   HttpOk(ctx, orderItemList)
 }
 
+//准备配送菜品的列表
 export let loadPrepareTransportOrderItem = async (ctx) => {
   let {
     waiterId
@@ -766,6 +838,7 @@ export let loadWaiterTransportOrderItem = async (ctx) => {
   HttpOk(ctx, orderItemList)
 }
 
+//配送菜品
 export let transportingOrderItem = async (ctx) => {
   let {
     orderItemId,
@@ -793,24 +866,32 @@ export let transportingOrderItem = async (ctx) => {
     HttpError(ctx, "主订单不存在")
     return
   }
-  if (![orderStatus.processing].some(s => s === order.status)) {
-    HttpError(ctx, "主订单必须是处理中才可以修改状态")
-    return
-  }
+  // if (![orderStatus.processing].some(s => s === order.status)) {
+  //   HttpError(ctx, "主订单必须是处理中才可以修改状态")
+  //   return
+  // }
+
+  let user = await userDb.findOne({
+    _id: waiterId
+  })
 
   await orderItemDb.updateOption({
     _id: orderItemId
   }, {
     status: productStatus.transporting,
     startTransportDatetime: Date.now(),
-    waiterId: waiterId
+    waiterId: waiterId,
+    waiterName: user.name
   })
+
+  await saveEventItems(orderItem.orderId, `${user.name}开始配送菜品${orderItem.name}`)
 
   ctx.io.emit(`orderId:${orderItem.orderId}`, {})
   ctx.io.emit(`transportingOrderItem`, {})
   return HttpOk(ctx, {})
 }
 
+//取消配送
 export let cancelTransportOrderItem = async (ctx) => {
   let {
     orderItemId
@@ -827,10 +908,10 @@ export let cancelTransportOrderItem = async (ctx) => {
     HttpError(ctx, "主订单不存在")
     return
   }
-  if (![orderStatus.processing].some(s => s === order.status)) {
-    HttpError(ctx, "主订单必须是处理中才可以修改状态")
-    return
-  }
+  // if (![orderStatus.processing].some(s => s === order.status)) {
+  //   HttpError(ctx, "主订单必须是处理中才可以修改状态")
+  //   return
+  // }
 
   await orderItemDb.updateOption({
     _id: orderItemId
@@ -838,13 +919,17 @@ export let cancelTransportOrderItem = async (ctx) => {
     status: productStatus.finish,
     startTransportDatetime: 0,
     waiterId: "",
+    waiterName: ""
   })
+
+  await saveEventItems(orderItem.orderId, `${orderItem.waiterName}取消配送菜品${orderItem.name}`)
 
   ctx.io.emit(`orderId:${orderItem.orderId}`, {})
   ctx.io.emit(`cancelTransportOrderItem`, {})
   return HttpOk(ctx, {})
 }
 
+//配送菜品完毕
 export let transportedOrderItem = async (ctx) => {
   let {
     orderItemId
@@ -865,10 +950,10 @@ export let transportedOrderItem = async (ctx) => {
     HttpError(ctx, "主订单不存在")
     return
   }
-  if (![orderStatus.processing].some(s => s === order.status)) {
-    HttpError(ctx, "主订单必须是处理中才可以修改状态")
-    return
-  }
+  // if (![orderStatus.processing].some(s => s === order.status)) {
+  //   HttpError(ctx, "主订单必须是处理中才可以修改状态")
+  //   return
+  // }
 
   await orderItemDb.updateOption({
     _id: orderItemId
@@ -877,11 +962,14 @@ export let transportedOrderItem = async (ctx) => {
     endTransportDatetime: Date.now()
   })
 
+  await saveEventItems(orderItem.orderId, `${orderItem.waiterName}完成配送菜品${orderItem.name}`)
+
   ctx.io.emit(`orderId:${orderItem.orderId}`, {})
   ctx.io.emit(`transportedOrderItem`, {})
   return HttpOk(ctx, {})
 }
 
+//支付订单
 export let paymentOrder = async (ctx) => {
   let {
     orderId,
@@ -924,11 +1012,14 @@ export let paymentOrder = async (ctx) => {
     status: tableStatus.available,
   })
 
+  await saveEventItems(orderId, `支付订单  支付金额:${paymentPrice}  总金额:${totalPrice} 优惠金额:${totalOfferPrice} 支付方式:${paymentType} 备注:${remark}`)
+
   ctx.io.emit("paymentOrder", {})
   HttpOk(ctx, {})
   return
 }
 
+//取消订单
 export let cancelOrder = async (ctx) => {
   let {
     orderId,
@@ -964,7 +1055,56 @@ export let cancelOrder = async (ctx) => {
     orderId: ""
   })
 
+  await saveEventItems(orderId, `取消订单`)
+
   ctx.io.emit("cancelOrder", {})
   HttpOk(ctx, {})
   return
+}
+
+//修改订单支付金额
+export let updatePayment = async (ctx) => {
+  let {
+    orderId,
+    paymentPrice,
+    remark
+  } = ctx.request.body
+
+  let order = await orderDb.findOne({
+    _id: orderId
+  })
+  if (!order) {
+    HttpError(ctx, "无此订单")
+    return
+  }
+
+  await orderDb.updateOption({
+    _id: orderId
+  }, {
+    paymentPrice,
+    remark
+  })
+
+  await saveEventItems(orderId, `修改支付金额和备注  支付金额:${paymentPrice} 备注:${remark}`)
+
+  HttpOk(ctx, {})
+}
+
+//保存事件记录
+let saveEventItems = async (orderId, content) => {
+  let order = await orderDb.findOne({
+    _id: orderId
+  })
+
+  let eventItems = order.eventItems
+  eventItems.push({
+    createAt: Date.now(),
+    content: content
+  })
+
+  await orderDb.updateOption({
+    _id: orderId
+  }, {
+    eventItems: eventItems
+  })
 }

@@ -30,3 +30,13 @@ export let userType = {
 export let orderSource = {
   cashRegister: 1
 }
+
+export let configs = {
+  discountPrice: 1
+}
+
+export let paymentType = {
+  cash: 1,
+  weixin: 2,
+  zhifupay: 3
+}
