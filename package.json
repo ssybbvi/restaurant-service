@@ -25,7 +25,7 @@
     "koa-send": "^5.0.0",
     "koa-static2": "^0.1.8",
     "nedb-promises": "^3.0.6",
-    "nodemailer": "^6.1.0",
+    "nodemailer": "^6.4.16",
     "require-directory": "^2.1.1",
     "sequelize": "^5.2.12",
     "socket.io": "^2.2.0"
